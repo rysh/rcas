@@ -30,4 +30,5 @@ Phase 2 の定理は次の前提からの帰結であり、前提そのものが
 | 13 | 採用が不可逆の閾値モデルに従い、重みが非負であること | §5.4 `step` の定義、仮定 `hw` |
 | 14 | 層間の整合度が `[0, 1]` に入り、同じ層では `1` であること | §5.5 `Alignment` のフィールド |
 | 15 | 二者の相互作用が線形の相互結合 `0 < c < 1` で近似できること | §5.6 の仮定 `hx`, `hy`, `hc0`, `hc1` |
-| 16 | 指示がいずれ止まり、チームがパラメータ更新を担い、そのパラメータが落ち着くこと | §4.10 強い版 `eventually_selfManagingStrong` の仮定 `hu`, `hθ`；`SelfManagingStrong.tendsto` の仮定 `hsettle` |
+| 16 | マネージャー（チーム外）からの指示がいずれ止まり、チームがパラメータ更新を担うこと | §4.10 強い版 `eventually_selfManagingStrong` の仮定 `hu`, `hθ` |
+| 17 | 環境・要求・私生活・体調などでパラメータが変わり続けても、安定水準の帯（復元の強さが `1 − K` 以上、平衡点が基準水準から `ρ` 以内）に留まること。あるいは、チームの更新がどんな外的影響に対しても帯を保つこと | `SelfManagingStrong.eventually_near` の仮定 `hband`；`SelfManagingStrong.eventually_near_of_invariant` の仮定 `hθT`, `hinv`；`eventually_near_of_stableBand` |

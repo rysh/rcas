@@ -163,7 +163,7 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 | 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
 |---|---|---|---|---|---|
 | 主要定理の `#print axioms` | `#print axioms ...` | Audit.lean | — | 確認済み（標準3公理以下） | — |
-| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2 を含む全 488 宣言） | — |
+| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2 を含む全 505 宣言） | — |
 
 ## Phase 2
 
@@ -180,6 +180,10 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 | **F2** スカラー線形版の極限は b/(1−c) | `scalar_tendsto` | Field/Forcing.lean | 帰結 | 証明済み | — |
 | F2：極限は b について単射 | `affine_fixed_injective` | Field/Forcing.lean | 帰結 | 証明済み | — |
 | **F2** 指示と制約は別の操作：極限が一致 ⇔ b = b'（初期値・強制の履歴によらない） | `directive_vs_constraint` | Field/Forcing.lean | 帰結 | 証明済み | — |
+| a(t+1) ≤ K a t + c（0 ≤ K < 1）なら、いずれ a t ≤ c/(1−K) + η | `eventually_le_of_affine_bound` | Field/Forcing.lean | 帰結（汎用補題） | 証明済み | — |
+| 安定水準の帯：f θ が K-縮小で、不動点が基準水準 xBar から ρ 以内 | `StableBand` | Field/Forcing.lean | 定義 | — | — |
+| F1 の拡張：指示が止まり、パラメータが変わり続けても帯の中にあれば、状態はいずれ xBar から (1+K)ρ/(1−K) + η 以内に収まる | `eventually_near_of_stableBand` | Field/Forcing.lean | 帰結 | 証明済み | — |
+| 帯の幅が 0 なら、パラメータが変わり続けても xBar に収束する | `tendsto_of_stableBand_zero` | Field/Forcing.lean | 帰結 | 証明済み | — |
 
 ### §5.2 Stuart–Landau の振幅（Field/StuartLandau.lean）
 
@@ -251,14 +255,17 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 
 | 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
 |---|---|---|---|---|---|
-| 強い自走状態：Phase 1 の四条件＋速い力学の自律実行（u t = 0）＋遅いパラメータの自律更新（θ(t+1) = paramUpdate (θ t) (x t)） | `SelfManagingStrong` | Field/SelfManagingField.lean | 定義 | — | — |
+| 強い自走状態：Phase 1 の四条件＋速い力学の自律実行（u t = 0）＋遅いパラメータの自律更新（θ(t+1) = paramUpdate (θ t) (x t) (ω t)、ω は環境・要求・私生活・体調などの外的影響） | `SelfManagingStrong` | Field/SelfManagingField.lean | 定義 | — | — |
 | 強い自走状態は自走状態 | `SelfManagingStrong.toSelfManaging` | Field/SelfManagingField.lean | 帰結（定義から直ちに） | 証明済み | — |
-| SM1 の強い版 | `eventually_selfManagingStrong` | Field/SelfManagingField.lean | 帰結 | 証明済み | SM1 の仮定に加え「指示がいずれ止まる」（`hu`）「パラメータ更新をチームが担う」（`hθ`）。どちらも前提 |
-| 強い自走状態では極限はチームのパラメータで決まり、過去の指示によらない | `SelfManagingStrong.tendsto` | Field/SelfManagingField.lean | 帰結 | 証明済み | 「チームのパラメータがいずれ θ* に落ち着く」（`hsettle`）は前提 |
+| SM1 の強い版 | `eventually_selfManagingStrong` | Field/SelfManagingField.lean | 帰結 | 証明済み | SM1 の仮定に加え「マネージャー（チーム外）からの指示がいずれ止まる」（`hu`）「パラメータ更新をチームが担う」（`hθ`）。どちらも前提 |
+| チームの更新がどんな外的影響に対しても帯を保つなら、パラメータは帯に留まる | `SelfManagingStrong.mem_stableBand` | Field/SelfManagingField.lean | 帰結 | 証明済み | 帯の不変性（`hinv`）は前提 |
+| 強い自走状態で、パラメータが変わり続けても安定水準の帯に留まるなら、状態はいずれ基準水準の近くに収まる（それ以前の指示によらない） | `SelfManagingStrong.eventually_near` | Field/SelfManagingField.lean | 帰結 | 証明済み | 「パラメータが帯に留まる」（`hband`）は前提 |
+| 同上（帯に留まることをチームの更新の不変性から導く版） | `SelfManagingStrong.eventually_near_of_invariant` | Field/SelfManagingField.lean | 帰結 | 証明済み | 開始時に帯の中（`hθT`）、帯の不変性（`hinv`）は前提 |
+| 帯の幅が 0 なら、パラメータが変わり続けても基準水準に収束する | `SelfManagingStrong.tendsto_of_fixed_level` | Field/SelfManagingField.lean | 帰結 | 証明済み | `hband`（幅 0）は前提 |
 
 ### 監査（Phase 2 分）
 
-Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2 を合わせた全 488 宣言。
+Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2 を合わせた全 505 宣言。
 
 ## 指示書のスケッチからの調整
 
@@ -284,3 +291,6 @@ Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている�
 | §5.4 T5 | 「`Fintype.card ι` 歩以内に不動点に達する」 | `finalAdopters := step^[Fintype.card ι] A₀` を定義し、それが `step` の不動点であることを示す | 「最終採用集合」を A3 で名指しできるようにするため |
 | §5.5 A3 | 「最終採用集合」 | `finalAdopters`（T5）。すべての時刻 t についての版も証明 | — |
 | §5.6 | 漸化式 | 任意の列に対する漸化式の仮定 | §4.6・§4.7 と同じ方針 |
+| §4.10 強い定義の `u` | 「速い力学を自律実行できる」 | `u` はチーム自身の力学 `f θ` の外から状態を直接押すもの、すなわちマネージャー（とその上の組織）からの指示。チーム内の相互作用は `f θ` の中、環境・要求の変化はパラメータ `θ` の側に入る | この読み方は著者確認済み（2026-10-04） |
+| §4.10 強い定義のパラメータ | 「遅いパラメータを自律更新できる」 | `θ (t+1) = paramUpdate (θ t) (x t) (ω t)`。外的影響 `ω`（環境・要求・私生活・体調・伸び悩みなど）を更新の入力にする | 職場の環境が変わらなくても個人のパラメータは変わりうる（著者の指摘、2026-10-04） |
+| §4.10 強い定義の帰結 | （指示書に定理の指定なし） | 当初の「パラメータがいずれ一定値に落ち着く（`hsettle`）なら状態は一点に収束する」を撤回し、「パラメータが変わり続けても安定水準の帯に留まるなら、状態はいずれ一定の幅に収まる」に置き換えた | 「一定値に落ち着く」は現実に合わず「一定水準で安定する」が正しいという著者の指摘による（2026-10-04） |

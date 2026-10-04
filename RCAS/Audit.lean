@@ -130,6 +130,9 @@ elab "#assert_standard_axioms_in " ns:ident : command => do
 #print axioms RCAS.scalar_tendsto
 #print axioms RCAS.affine_fixed_injective
 #print axioms RCAS.directive_vs_constraint
+#print axioms RCAS.eventually_le_of_affine_bound
+#print axioms RCAS.eventually_near_of_stableBand
+#print axioms RCAS.tendsto_of_stableBand_zero
 
 /-! ### §5.2 Field/StuartLandau -/
 #print axioms RCAS.slRhs_eq_zero_iff_of_nonpos
@@ -175,4 +178,7 @@ elab "#assert_standard_axioms_in " ns:ident : command => do
 /-! ### §4.10 strong definition, Field/SelfManagingField -/
 #print axioms RCAS.SelfManagingStrong.toSelfManaging
 #print axioms RCAS.eventually_selfManagingStrong
-#print axioms RCAS.SelfManagingStrong.tendsto
+#print axioms RCAS.SelfManagingStrong.mem_stableBand
+#print axioms RCAS.SelfManagingStrong.eventually_near
+#print axioms RCAS.SelfManagingStrong.eventually_near_of_invariant
+#print axioms RCAS.SelfManagingStrong.tendsto_of_fixed_level

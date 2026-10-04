@@ -9,6 +9,7 @@ import RCAS.Dependence
 import RCAS.Decision
 import RCAS.FutureChoice
 import RCAS.SelfManaging
+import RCAS.Performance
 import RCAS.Field.Forcing
 import RCAS.Field.StuartLandau
 import RCAS.Field.Coupling

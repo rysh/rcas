@@ -163,7 +163,7 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 | 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
 |---|---|---|---|---|---|
 | 主要定理の `#print axioms` | `#print axioms ...` | Audit.lean | — | 確認済み（標準3公理以下） | — |
-| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2 を含む全 505 宣言） | — |
+| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2・拡張を含む全 563 宣言） | — |
 
 ## Phase 2
 
@@ -265,7 +265,40 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 
 ### 監査（Phase 2 分）
 
-Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2 を合わせた全 505 宣言。
+Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2・拡張を合わせた全 563 宣言。
+
+## 拡張：ドメイン別パフォーマンスとナレッジシェア（Performance.lean）
+
+著者の依頼（2026-10-04）による拡張。仕様は `docs/PERFORMANCE_SPEC.md`。Phase 1・2 のファイルは書き換えていない。フロンティアの定義（`max_i k·e`）は著者が選んだ。
+
+| 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
+|---|---|---|---|---|---|
+| 能力の上限 C = max_i k i | `ceiling` | Performance.lean | 定義 | — | — |
+| フロンティア F = max_i k i·e i | `frontier` | Performance.lean | 定義 | — | — |
+| 量 V = Σ e i·φ(k i) | `volume` | Performance.lean | 定義 | — | — |
+| 担える人 {i ∣ θ ≤ k i·e i}、N = その人数 | `carriers` | Performance.lean | 定義 | — | — |
+| 安定性：任意の m 人が抜けても担える人が残る | `ToleratesLoss` | Performance.lean | 定義 | — | — |
+| ナレッジシェアの力学（追いつき、0 ≤ η ≤ 1、トップは下がらない、初期にトップ） | `KnowledgeSharing`（フィールド） | Performance.lean | 前提 | — | — |
+| **PF1** k_h·e_h ≤ F ≤ k_h | `frontier_bounds` | Performance.lean | 帰結 | 証明済み | `0 ≤ k`、`e ≤ 1` |
+| **PF2** e_h = 1 なら F = C | `frontier_eq_ceiling_of_engaged` | Performance.lean | 帰結 | 証明済み | 同上 |
+| **PR1** m 人の離脱に耐える ⇔ m < N | `toleratesLoss_iff` | Performance.lean | 帰結 | 証明済み | — |
+| トップはトップのまま／能力は下がらない | `KnowledgeSharing.le_top`, `le_succ`, `monotone_member` | Performance.lean | 帰結 | 証明済み | — |
+| **PS1** C(t) = k t h | `KnowledgeSharing.ceiling_eq_top` | Performance.lean | 帰結 | 証明済み | — |
+| **PS2** シェアだけでは上限は変わらない／F は初期の上限を超えない | `KnowledgeSharing.ceiling_const`, `frontier_le_initial_ceiling` | Performance.lean | 帰結 | 証明済み | シェアだけ（トップ固定） |
+| **PS3** 実現されるフロンティアは単調非減少 | `KnowledgeSharing.frontier_monotone` | Performance.lean | 帰結 | 証明済み | `e` 固定、`0 ≤ e` |
+| **PM1** 上限が上がる ⇔ トップ自身が学ぶ | `KnowledgeSharing.ceiling_lt_iff` | Performance.lean | 帰結 | 証明済み | — |
+| `η ≤ 1` を外すと PM1 は崩れる | `rate_le_one_needed` | Performance.lean | 帰結（反例） | 証明済み | — |
+| **PV1** 量は単調非減少 | `KnowledgeSharing.volume_monotone` | Performance.lean | 帰結 | 証明済み | `φ` 単調、`e` 固定 |
+| **PV2** 量の厳密な増加 | `KnowledgeSharing.volume_lt_succ` | Performance.lean | 帰結 | 証明済み | `φ` 狭義単調、該当メンバーで `η > 0`・`e > 0`・トップとの差 > 0 |
+| 能力はトップの水準に収束 | `KnowledgeSharing.tendsto_top` | Performance.lean | 帰結 | 証明済み | シェアだけ、`η ≥ ηMin > 0` |
+| **PV3** 量は (Σ e)·φ(k_h) に収束 | `KnowledgeSharing.volume_tendsto` | Performance.lean | 帰結 | 証明済み | 同上、`φ` 連続 |
+| **PR2** 担える人の集合・人数は単調非減少 | `KnowledgeSharing.carriers_mono`, `card_carriers_monotone` | Performance.lean | 帰結 | 証明済み | `e` 固定 |
+| **PR3** いずれ {i ∣ θ < k_h·eMin i} が全員担える人になる | `KnowledgeSharing.eventually_subset_carriers` | Performance.lean | 帰結 | 証明済み | シェアだけ、`η ≥ ηMin > 0`、`e t i ≥ eMin i`（エンゲージメントの変動を許す） |
+| **PR3** そのような人が m 人より多ければ、いずれ m 人の離脱に耐える | `KnowledgeSharing.eventually_toleratesLoss` | Performance.lean | 帰結 | 証明済み | 同上 |
+| チーム全体 P = Σ_d w_d·Ψ(F_d, V_d, N_d) | `teamPerformance` | Performance.lean | 定義 | — | — |
+| **PT1** 全ドメインでシェアが働けば P は単調非減少 | `teamPerformance_monotone` | Performance.lean | 帰結 | 証明済み | `w ≥ 0`、`Ψ` は各引数で単調、`e` 固定 |
+| 1人の専門家 → 分散した専門性（F は 1 のまま、V は 1 → 2、N は 1 → 3、1人離脱への耐性なし → あり） | `Example.oneExpert_to_distributed` | Performance.lean | 帰結（具体例） | 証明済み | — |
+| 安定性を確率として扱う版、`S = g(N)` の具体形 | — | — | 範囲外 | 範囲外 | `N` と `ToleratesLoss` で表す（仕様） |
 
 ## 指示書のスケッチからの調整
 

@@ -39,6 +39,7 @@ RCAS/
   Decision.lean       §4.8 前提つき決定と再開（P10）
   FutureChoice.lean   §4.9 選択肢拡張（FC1, FC2）
   SelfManaging.lean   §4.10 自走状態（SM1）
+  Performance.lean    拡張：ドメイン別パフォーマンス（フロンティア・量・安定性）とナレッジシェア
   Field/
     Forcing.lean          §5.1 指示と制約（F1, F2）
     StuartLandau.lean     §5.2 振幅方程式の平衡と導関数（SL1–SL3）
@@ -52,6 +53,7 @@ docs/
   CORRESPONDENCE.md   対応表
   DEVIATIONS.md       追加仮定・未証明の記録
   EMPIRICAL.md        Lean に入れなかった経験的仮説
+  PERFORMANCE_SPEC.md 拡張（Performance.lean）の仕様
 sources/              著者が置く原稿（参照のみ）
 ```
 

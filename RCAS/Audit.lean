@@ -8,6 +8,7 @@ import RCAS.Dependence
 import RCAS.Decision
 import RCAS.FutureChoice
 import RCAS.SelfManaging
+import RCAS.Performance
 import RCAS.Field.Forcing
 import RCAS.Field.StuartLandau
 import RCAS.Field.Coupling
@@ -182,3 +183,25 @@ elab "#assert_standard_axioms_in " ns:ident : command => do
 #print axioms RCAS.SelfManagingStrong.eventually_near
 #print axioms RCAS.SelfManagingStrong.eventually_near_of_invariant
 #print axioms RCAS.SelfManagingStrong.tendsto_of_fixed_level
+
+/-! ### Extension: domain performance and knowledge sharing (Performance) -/
+#print axioms RCAS.frontier_bounds
+#print axioms RCAS.frontier_eq_ceiling_of_engaged
+#print axioms RCAS.toleratesLoss_iff
+#print axioms RCAS.KnowledgeSharing.le_top
+#print axioms RCAS.KnowledgeSharing.ceiling_eq_top
+#print axioms RCAS.KnowledgeSharing.ceiling_const
+#print axioms RCAS.KnowledgeSharing.frontier_le_initial_ceiling
+#print axioms RCAS.KnowledgeSharing.frontier_monotone
+#print axioms RCAS.KnowledgeSharing.ceiling_lt_iff
+#print axioms RCAS.rate_le_one_needed
+#print axioms RCAS.KnowledgeSharing.volume_monotone
+#print axioms RCAS.KnowledgeSharing.volume_lt_succ
+#print axioms RCAS.KnowledgeSharing.tendsto_top
+#print axioms RCAS.KnowledgeSharing.volume_tendsto
+#print axioms RCAS.KnowledgeSharing.carriers_mono
+#print axioms RCAS.KnowledgeSharing.card_carriers_monotone
+#print axioms RCAS.KnowledgeSharing.eventually_subset_carriers
+#print axioms RCAS.KnowledgeSharing.eventually_toleratesLoss
+#print axioms RCAS.teamPerformance_monotone
+#print axioms RCAS.Example.oneExpert_to_distributed

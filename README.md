@@ -39,7 +39,14 @@ RCAS/
   Decision.lean       §4.8 前提つき決定と再開（P10）
   FutureChoice.lean   §4.9 選択肢拡張（FC1, FC2）
   SelfManaging.lean   §4.10 自走状態（SM1）
-  Field/              §5 Phase 2（未着手）
+  Field/
+    Forcing.lean          §5.1 指示と制約（F1, F2）
+    StuartLandau.lean     §5.2 振幅方程式の平衡と導関数（SL1–SL3）
+    Coupling.lean         §5.3 結合行列と伝播（CP1–CP3）
+    Threshold.lean        §5.4 セカンドペンギン閾値モデル（T1–T5）
+    Attention.lean        §5.5 多層注意（A1–A3）
+    MutualInduction.lean  §5.6 相互誘導（M1–M4）
+    SelfManagingField.lean §4.10 Field 拡張後の強い自走状態
   Audit.lean          公理監査
 docs/
   CORRESPONDENCE.md   対応表

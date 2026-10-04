@@ -9,4 +9,11 @@ import RCAS.Dependence
 import RCAS.Decision
 import RCAS.FutureChoice
 import RCAS.SelfManaging
+import RCAS.Field.Forcing
+import RCAS.Field.StuartLandau
+import RCAS.Field.Coupling
+import RCAS.Field.Threshold
+import RCAS.Field.Attention
+import RCAS.Field.MutualInduction
+import RCAS.Field.SelfManagingField
 import RCAS.Audit

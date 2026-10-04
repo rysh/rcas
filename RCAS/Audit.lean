@@ -8,6 +8,13 @@ import RCAS.Dependence
 import RCAS.Decision
 import RCAS.FutureChoice
 import RCAS.SelfManaging
+import RCAS.Field.Forcing
+import RCAS.Field.StuartLandau
+import RCAS.Field.Coupling
+import RCAS.Field.Threshold
+import RCAS.Field.Attention
+import RCAS.Field.MutualInduction
+import RCAS.Field.SelfManagingField
 
 /-!
 # Axiom audit
@@ -115,3 +122,57 @@ elab "#assert_standard_axioms_in " ns:ident : command => do
 #print axioms RCAS.eventually_selfManaging
 #print axioms RCAS.SelfManaging.J_le_succ
 #print axioms RCAS.performance_not_derivable
+
+/-! ### §5.1 Field/Forcing -/
+#print axioms RCAS.tendsto_of_eventually_contracting
+#print axioms RCAS.forcing_does_not_persist
+#print axioms RCAS.forcing_history_irrelevant
+#print axioms RCAS.scalar_tendsto
+#print axioms RCAS.affine_fixed_injective
+#print axioms RCAS.directive_vs_constraint
+
+/-! ### §5.2 Field/StuartLandau -/
+#print axioms RCAS.slRhs_eq_zero_iff_of_nonpos
+#print axioms RCAS.slRhs_eq_zero_iff_of_pos
+#print axioms RCAS.deriv_slRhs
+#print axioms RCAS.deriv_slRhs_zero
+#print axioms RCAS.deriv_slRhs_sqrt
+#print axioms RCAS.deriv_slRhs_sqrt_needs_nonneg
+#print axioms RCAS.deriv_slRhs_zero_at_criticality
+#print axioms RCAS.deriv_slRhs_signs
+
+/-! ### §5.3 Field/Coupling -/
+#print axioms RCAS.propagate_eq
+#print axioms RCAS.influence_eq
+#print axioms RCAS.influence_eq_zero_of_uncoupled
+#print axioms RCAS.pow_apply_eq_zero_of_not_walk
+#print axioms RCAS.influence_eq_zero_of_no_walk
+
+/-! ### §5.4 Field/Threshold -/
+#print axioms RCAS.subset_step
+#print axioms RCAS.monotone_iterate_step
+#print axioms RCAS.step_mono
+#print axioms RCAS.iterate_step_mono
+#print axioms RCAS.iterate_step_mono_weight
+#print axioms RCAS.step_singleton_of_isolated
+#print axioms RCAS.iterate_step_singleton_of_isolated
+#print axioms RCAS.step_finalAdopters
+#print axioms RCAS.iterate_step_subset_finalAdopters
+
+/-! ### §5.5 Field/Attention -/
+#print axioms RCAS.effWeight_le
+#print axioms RCAS.effWeight_eq_of_aligned
+#print axioms RCAS.iterate_step_effWeight_subset_aligned
+#print axioms RCAS.finalAdopters_effWeight_subset_aligned
+
+/-! ### §5.6 Field/MutualInduction -/
+#print axioms RCAS.mutual_sum_eq
+#print axioms RCAS.mutual_diff_succ
+#print axioms RCAS.mutual_diff_eq
+#print axioms RCAS.mutual_tendsto
+#print axioms RCAS.mutual_limit_ne
+
+/-! ### §4.10 strong definition, Field/SelfManagingField -/
+#print axioms RCAS.SelfManagingStrong.toSelfManaging
+#print axioms RCAS.eventually_selfManagingStrong
+#print axioms RCAS.SelfManagingStrong.tendsto

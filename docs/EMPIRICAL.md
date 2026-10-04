@@ -13,7 +13,21 @@
 | 5 | ルール削除を許す系の、ルール数あたり成果 | §4.4 P8 `RuleDynamics.monotone_J_iterate`；P9 `RuleDynamics.J_update_gt_of_erase`, `Example.card_not_monotone` | 設計した更新作用素のもとで評価が下がらないこと、削除が改善なら更新が削除方向に動きうることだけを示した。P8 は現実の組織が改善するという主張ではない |
 | 6 | フィードバック間隔の最適値 | §4.5 E1–E4 `efficacy_monotone`, `efficacy_eq`, `efficacy_lt_of_selfChosen_success`；§4.4 P8 | 自己効力感が「自分で選んだ成功」の回数で決まることだけを示した。間隔とその最適値はモデルにない |
 | 7 | 前提を記録した決定の、陳腐化検出までの時間 | §4.8 P10a `Decision.instDecidableReopenable`；P10b `Decision.not_reopenable_of_premises_eq_empty`；`Decision.Reopenable.mono` | 前提を記録すれば陳腐化が機械的に判定でき、記録しなければ決して検出されないことだけを示した。検出までの時間は扱わない |
-| 8 | 透過率 `τ(G)` の操作化と、結合密度による伝播の差 | §5.3 CP1–CP3（Phase 2、未着手）；§5.4 T3（Phase 2、未着手） | Phase 2 で結合構造に関する単調性を示す予定。`τ(G)` の候補（密度、スペクトル半径、代数的連結度）の比較は範囲外 |
+| 8 | 透過率 `τ(G)` の操作化と、結合密度による伝播の差 | §5.3 CP1 `influence_eq`、CP2 `influence_eq_zero_of_uncoupled`、CP3 `influence_eq_zero_of_no_walk`；§5.4 T3 `iterate_step_mono_weight`；§5.5 A3 `iterate_step_effWeight_subset_aligned` | 影響が行列の冪で表されること、歩道がなければ伝わらないこと、閾値モデルで重みが成分ごとに大きければ採用集合も大きいことだけを示した。`τ(G)` の操作化と候補（密度、スペクトル半径、代数的連結度）の比較は扱わない |
 | 9a | 現実の組織で `a > 0` が成り立つこと（自分で選んだ成功が自己効力感を上げる） | §4.5 E4 `efficacy_lt_of_selfChosen_success` の仮定 `ha : 0 < a` | E4 はこの前提からの帰結。前提自体は検証していない |
 | 9b | 現実の組織で `p > 0` が成り立つこと（原理に戻して返すと内面化が起きる） | §4.7 D2–D5 の仮定 `hp : 0 < p`（D5 では `0 < pMin`）；SM1 | D2–D5・SM1 はこの前提からの帰結 |
 | 9c | 現実の組織で成果条件（§4.10 ③）が成り立つこと | §4.10 SM1 `eventually_selfManaging` の仮定 `hq`；`performance_not_derivable` | ③は Phase 1 のモデルから導けないことを Lean で示した（`performance_not_derivable`）。成り立つかどうかは実測で確かめる必要がある |
+
+## Phase 2 のモデルが置いている前提
+
+Phase 2 の定理は次の前提からの帰結であり、前提そのものが現実の組織で成り立つかは Lean では確かめていない。
+
+| # | 前提（実測で確かめる対象） | どの定理の仮定・定義に現れるか |
+|---|---|---|
+| 10 | 指示が状態への加法的な強制 `u` として働き、制約が地形のパラメータ `θ` として働くこと。`f θ` が縮小写像であること | §5.1 `forcing_does_not_persist`, `directive_vs_constraint` の仮定 `hx`, `hf` |
+| 11 | 振幅の静的な形が `μ r − r³` で表されること | §5.2 `slRhs` の定義 |
+| 12 | 影響の伝播が線形 `x (t+1) = W.mulVec (x t)` で近似できること | §5.3 の仮定 `hx` |
+| 13 | 採用が不可逆の閾値モデルに従い、重みが非負であること | §5.4 `step` の定義、仮定 `hw` |
+| 14 | 層間の整合度が `[0, 1]` に入り、同じ層では `1` であること | §5.5 `Alignment` のフィールド |
+| 15 | 二者の相互作用が線形の相互結合 `0 < c < 1` で近似できること | §5.6 の仮定 `hx`, `hy`, `hc0`, `hc1` |
+| 16 | 指示がいずれ止まり、チームがパラメータ更新を担い、そのパラメータが落ち着くこと | §4.10 強い版 `eventually_selfManagingStrong` の仮定 `hu`, `hθ`；`SelfManagingStrong.tendsto` の仮定 `hsettle` |

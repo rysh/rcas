@@ -48,7 +48,14 @@ Phase 2 の定理は次の前提からの帰結であり、前提そのものが
 | # | 仮説 | Lean の前提 |
 |---|---|---|
 | 23 | escalation 率が manager dependence `D_t` と比例するか（比例するなら、トップがすべての問題を解けることが従う：`top_solves_all_of_proportional`） | ESC3 の仮定 `α > 0`、`hr : r t = α · D t`（`proportional_recurrence_iff` ほか） |
-| 24 | スクラムのプランニング＋デイリーが、Holmström の「努力観察不能」前提を実際に覆すか | OB1 `not_outputOnly_of_effortObservable`、OB2 `proportionalShare_spec`（`EffortObservable` が成り立つ環境を前提とする） |
+| 24 | スクラムのプランニング＋デイリーが、Holmström の「努力観察不能」前提を実際に覆すか（著者のモデルには利益配分がないので、Holmström の枠組みとの対比としての問い） | OB1 `not_outputOnly_of_effortObservable`、OB2 `proportionalShare_spec`（`EffortObservable` が成り立つ環境を前提とする） |
 | 25 | チームが diffusion／specialization のフェーズ切替を自律的に行うか、それが V・S・F にどう影響するか | OM1–OM3 の `mode`、`η_base`、`δ`（`schedule_monotone`、`ModeDynamics.*`） |
 | 26 | Deci et al. (1999) の d = −0.88 が autonomous engagement 環境でも再現されるか。統制的報酬の効果 `γ` と承認的フィードバックの効果 `β` の符号・大きさ、動機づけの移行 | SDT1 `Example.sdt1`・`engagementPath_succ_lt` の `γ > 0`、SDT2 `engagementPath_monotone` の `β ≥ 0` |
 | 27 | 問題の難易度分布 `F` がトップの水準で連続か（跳びがあると escalation はトップの水準まで下がらない） | ESC2 の仮定 `ContinuousAt F (k 0 h)` |
+
+## 利益配分をモデルに含めない理由（NoAllocation.lean）が置いている前提
+
+| # | 仮説 | Lean の前提 |
+|---|---|---|
+| 28 | 配分額がいくらでも、アンダーマイニングによるエンゲージメントの低下が一定以上ある（`γ x ≥ γMin > 0`）。額を大きくしても低下は消えない | NA5・NA6 の仮定 `hγ` |
+| 29 | 利益が、努力に見合う額の合計を下回る時点が現実に生じる（利益の変動の大きさ）。「努力に見合う額」`c` を何で決めるか | NA2・NA3 の `q t < ∑ c t`（定理自体は `c` の決め方によらない） |

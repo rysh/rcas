@@ -14,6 +14,7 @@ import RCAS.TaskType
 import RCAS.OperatingMode
 import RCAS.Motivation
 import RCAS.Escalation
+import RCAS.NoAllocation
 import RCAS.Field.Forcing
 import RCAS.Field.StuartLandau
 import RCAS.Field.Coupling
@@ -279,3 +280,14 @@ elab "#assert_standard_axioms_in " ns:ident : command => do
 #print axioms RCAS.proportional_escalation_tendsto_zero
 #print axioms RCAS.proportional_escalation_eventually_le
 #print axioms RCAS.top_solves_all_of_proportional
+
+/-! ### No profit allocation (author's decision): NoAllocation -/
+#print axioms RCAS.exists_short_of_profit_lt
+#print axioms RCAS.exists_neg_of_loss
+#print axioms RCAS.exists_commensurate_iff
+#print axioms RCAS.exists_commensurate_path_iff
+#print axioms RCAS.proportionalShare_ne_of_profit_ne
+#print axioms RCAS.Example.fluctuating_profit
+#print axioms RCAS.engagementPathSized_succ_le
+#print axioms RCAS.engagementPathSized_le_engagementPath
+#print axioms RCAS.engagementPathSized_monotone_of_no_allocation

@@ -3,6 +3,10 @@ import RCAS.Basic
 /-!
 # Observable effort and the moral-hazard premise (survey addition §1)
 
+**Position.** The author's model has no allocation of profit (author's decision, 2026-10-05).
+This file is kept only as a contrast with Holmström's framework and is outside the author's
+model; the reasons for having no allocation are formalized in `RCAS.NoAllocation`.
+
 Holmström (1982) assumes that individual effort is unobservable and only the joint output is
 observable, so that a sharing rule can depend on the output only. When the planning (who does
 what) and the daily stand-up (what each did) make individual contributions visible, a sharing

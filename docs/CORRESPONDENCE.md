@@ -163,7 +163,7 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 | 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
 |---|---|---|---|---|---|
 | 主要定理の `#print axioms` | `#print axioms ...` | Audit.lean | — | 確認済み（標準3公理以下） | — |
-| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2・拡張・サーベイ反映を含む全 822 宣言） | — |
+| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2・拡張・サーベイ反映・NoAllocation を含む全 840 宣言） | — |
 
 ## Phase 2
 
@@ -265,7 +265,7 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 
 ### 監査（Phase 2 分）
 
-Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2・拡張・サーベイ反映を合わせた全 822 宣言。
+Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2・拡張・サーベイ反映・NoAllocation を合わせた全 840 宣言。
 
 ## 拡張：ドメイン別パフォーマンスとナレッジシェア（Performance.lean）
 
@@ -305,6 +305,8 @@ Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている�
 追加指示書 `../rcas-lean-survey-additions.md`（2026-10-04）による。実装方針は `docs/SURVEY_ADDITIONS_SPEC.md`、指示書からの補正は `docs/DEVIATIONS.md`。既存ファイル（Phase 1・2・Performance.lean）は書き換えていない。
 
 ### §1 努力の可観測性（Observable.lean）
+
+**位置づけ**：著者のモデルに利益配分はない（著者の判断、2026-10-05）。このファイルは Holmström の枠組みとの対比として残しており、著者のモデルの外にある。配分を入れない理由は下の「利益配分をモデルに含めない理由」節。
 
 | 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
 |---|---|---|---|---|---|
@@ -391,6 +393,25 @@ Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている�
 | **ESC3** `r = α·D`（`α > 0`）なら D の漸化式 ⇔ r の漸化式 | `proportional_recurrence_iff` | Escalation.lean | 帰結 | 証明済み | 比例は前提（EMPIRICAL #23） |
 | ESC3：r の閉形式・0 への収束・有限時間で閾値以下 | `proportional_escalation_eq`, `..._tendsto_zero`, `..._eventually_le` | Escalation.lean | 帰結 | 証明済み | 同上 |
 | ESC3 の帰結：比例・D の減衰・ESC2 の条件がそろうと、トップはすべての問題を解ける（`F (k 0 h) = 1`） | `top_solves_all_of_proportional` | Escalation.lean | 帰結 | 証明済み | — |
+
+## 利益配分をモデルに含めない理由（NoAllocation.lean）
+
+著者の判断（2026-10-05）による。仕様は `docs/NO_ALLOCATION_SPEC.md`。理由は2つある。(1) 配分が大きくてもアンダーマイニング効果がある。(2) 利益は変動するので、努力に見合った配分が必ずできるとは限らない。(2) は定理、(1) は前提として置いた。
+
+| 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
+|---|---|---|---|---|---|
+| **NA1** 予算均衡で全員に見合った額以上を配れる ⇔ 利益 ≥ 見合う額の合計 | `exists_commensurate_iff` | NoAllocation.lean | 帰結 | 証明済み | — |
+| **NA2** 利益が見合う額の合計を下回れば、どんな配分でも誰かが見合わない | `exists_short_of_profit_lt` | NoAllocation.lean | 帰結 | 証明済み | 予算均衡 |
+| 損失が出れば誰かの配分が負 | `exists_neg_of_loss` | NoAllocation.lean | 帰結 | 証明済み | 予算均衡 |
+| **NA3** 全時刻で見合った配分ができる ⇔ 全時刻で利益が見合う合計以上 | `exists_commensurate_path_iff` | NoAllocation.lean | 帰結 | 証明済み | — |
+| **NA4** 努力比例配分では同じ努力でも利益が違えば配分が違う | `proportionalShare_ne_of_profit_ne` | NoAllocation.lean | 帰結 | 証明済み | `e i > 0`、`e 0 + e 1 > 0` |
+| 例：見合う額 3 の2人、利益 10 → 4 | `Example.fluctuating_profit` | NoAllocation.lean | 帰結（具体例） | 証明済み | — |
+| 配分額つきのエンゲージメント力学 | `engagementPathSized` | NoAllocation.lean | 定義 | — | — |
+| 額によらないアンダーマイニング `γ x ≥ γMin > 0` | 定理の仮定 `hγ` | NoAllocation.lean | **前提** | — | EMPIRICAL #28 |
+| **NA5** 承認のない時刻に配分があれば、額によらず `γMin` 以上下がる | `engagementPathSized_succ_le` | NoAllocation.lean | 帰結（前提からほぼ直ちに） | 証明済み | `hγ` |
+| **NA6** 額をどう変えても、一律 `γMin` の低下の軌道以下 | `engagementPathSized_le_engagementPath` | NoAllocation.lean | 帰結 | 証明済み | `hγ` |
+| **NA7** 配分がなければ承認だけで単調非減少 | `engagementPathSized_monotone_of_no_allocation` | NoAllocation.lean | 帰結 | 証明済み | `β ≥ 0` |
+| 配分が努力を直接増やす経済的効果（Holmström 型の誘因） | — | — | 範囲外 | 範囲外 | 著者のモデルに配分がないため |
 
 ## 指示書のスケッチからの調整
 

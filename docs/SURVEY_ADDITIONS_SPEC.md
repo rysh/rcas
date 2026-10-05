@@ -1,6 +1,6 @@
 # 仕様：サーベイ反映の追加（実装方針）
 
-追加指示書 `../rcas-lean-survey-additions.md` を Lean に落とすときの方針。追加指示書の内容のうち、そのままでは型が通らないもの、偽であるもの、空虚なものについては、最初の指示書のルール4に従う。すなわち、必要最小の追加仮定を明示し、反例を Lean で証明し、`docs/DEVIATIONS.md` に記録する。既存ファイル（Phase 1・2・Performance.lean）は書き換えない。
+追加指示書 `docs/instructions/rcas-lean-survey-additions.md` を Lean に落とすときの方針。追加指示書の内容のうち、そのままでは型が通らないもの、偽であるもの、空虚なものについては、最初の指示書のルール4に従う。すなわち、必要最小の追加仮定を明示し、反例を Lean で証明し、`docs/DEVIATIONS.md` に記録する。既存ファイル（Phase 1・2・Performance.lean）は書き換えない。
 
 ## §1 Observable.lean（OB1, OB2）
 

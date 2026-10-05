@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "RCAS: A Lean 4 Formalization of the Reference–Choice Adaptive System"
+type: software
+authors:
+  - alias: "Franny Philos Sophia"
+    orcid: "https://orcid.org/0009-0004-7089-5265"
+    affiliation: "Elanare Institute"
+version: 0.1.0
+license: Apache-2.0
+repository-code: "https://github.com/rysh/rcas"
+keywords:
+  - "Lean 4"
+  - "Mathlib"
+  - "formal verification"
+  - "management"
+  - "leadership"
+  - "self-managing teams"
+  - "knowledge sharing"
+  - "self-determination theory"
+abstract: >-
+  A machine-checked formalization, in Lean 4 with Mathlib, of a mathematical
+  model of a management methodology that sets reference points and leaves the
+  choice of method to the individual or the team. It separates what follows
+  formally from the model's premises from what needs empirical verification.

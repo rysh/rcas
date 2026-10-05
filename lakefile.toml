@@ -7,7 +7,7 @@ defaultTargets = ["RCAS"]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
 relaxedAutoImplicit = false
 weak.linter.mathlibStandardSet = true
-weak.linter.style.header = false # no copyright header: authorship/licence not yet decided
+weak.linter.style.header = false # no per-file copyright headers; licence: Apache-2.0 (see LICENSE)
 maxSynthPendingDepth = 3
 
 [[require]]

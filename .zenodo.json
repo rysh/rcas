@@ -1,0 +1,26 @@
+{
+  "title": "RCAS: A Lean 4 Formalization of the Reference–Choice Adaptive System",
+  "upload_type": "software",
+  "version": "0.1.0",
+  "creators": [
+    {
+      "name": "Franny Philos Sophia",
+      "affiliation": "Elanare Institute",
+      "orcid": "0009-0004-7089-5265"
+    }
+  ],
+  "description": "<p>A machine-checked formalization, in Lean 4 with Mathlib, of a mathematical model of a management methodology: set reference points (purpose, criteria and boundaries) and leave the choice of method to the individual or the team. The model is called RCAS (Reference–Choice Adaptive System).</p><p>The formalization answers one question: which claims <em>follow formally</em> from the model's premises, and which do not (and so need external, empirical verification). Premises appear only as structure fields or explicit theorem hypotheses (the <code>axiom</code> keyword is never used); consequences are theorems; empirical claims are kept out of Lean and listed in <code>docs/EMPIRICAL.md</code>.</p><p>Contents: reference points and genuine choice; minimal sufficient constraints; nested organizational layers; rule update and deletion; self-efficacy; distribution of capability (including Hall's condition); decay of dependence on the manager; decisions with recorded premises; widening visible futures; the self-managing state; directive versus constraint; Stuart–Landau statics; coupling and propagation; threshold cascades; multi-layer attention; mutual induction; domain performance (frontier, volume, stability) under knowledge sharing; task types; operating modes; motivation on the self-determination continuum; escalation in a knowledge hierarchy; why the model contains no profit allocation; and the decomposition capability → output → outcome with the scope of the team's responsibility.</p><p>The build contains no <code>sorry</code>, and an audit command fails the build if any declaration depends on an axiom other than <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. Added hypotheses and their counterexamples are recorded in <code>docs/DEVIATIONS.md</code>; the correspondence between the model and Lean is in <code>docs/CORRESPONDENCE.md</code>; the original specifications are in <code>docs/instructions/</code>. Documentation is in Japanese; Lean identifiers and docstrings are in English. Built with Lean v4.34.1 and Mathlib v4.34.1.</p>",
+  "license": "Apache-2.0",
+  "access_right": "open",
+  "keywords": [
+    "Lean 4",
+    "Mathlib",
+    "formal verification",
+    "management",
+    "leadership",
+    "self-managing teams",
+    "knowledge sharing",
+    "self-determination theory",
+    "organizational behavior"
+  ]
+}

@@ -5,11 +5,8 @@ on:
   pull_request:
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read # Read access to repository contents
-  pages: write # Write access to GitHub Pages
-  id-token: write # Write access to ID tokens
+  contents: read
 
 jobs:
   build:
@@ -17,5 +14,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      # `lake build` includes RCAS/Audit.lean, which fails the build if any declaration in the
+      # namespace `RCAS` depends on an axiom other than propext / Classical.choice / Quot.sound.
       - uses: leanprover/lean-action@v1
-      - uses: leanprover-community/docgen-action@v1

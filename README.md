@@ -1,6 +1,10 @@
-# rcas — Reference–Choice Adaptive System の Lean 4 定式化
+# RCAS — Reference–Choice Adaptive System の Lean 4 定式化
 
-マネジメント方法論「参照点を置き、選択は本人またはチームに残す」の数理モデルを、Lean 4 + Mathlib で機械検証できる形にしたもの。「RCAS」は仮称で、名前空間は `RCAS`。
+> **English summary.** A machine-checked formalization, in Lean 4 with Mathlib, of a mathematical model of a management methodology: set reference points (purpose, criteria and boundaries) and leave the choice of method to the individual or the team. It separates what *follows formally* from the model's premises from what needs empirical verification. Premises are structure fields or theorem hypotheses (no `axiom`), consequences are theorems, and empirical claims are listed in `docs/EMPIRICAL.md`. The build has no `sorry` and fails if any declaration depends on an axiom other than `propext`, `Classical.choice` and `Quot.sound`. Documentation is in Japanese; Lean identifiers and docstrings are in English.
+
+マネジメント方法論「参照点を置き、選択は本人またはチームに残す」の数理モデルを、Lean 4 + Mathlib で機械検証できる形にしたもの。名称は RCAS（Reference–Choice Adaptive System）、名前空間は `RCAS`。
+
+著者：Franny Philos Sophia（Elanare Institute、ORCID [0009-0004-7089-5265](https://orcid.org/0009-0004-7089-5265)）
 
 この定式化が答える問いは一つ：モデルの前提から**形式的に従うこと**はどれで、**従わないこと（外部検証が要ること）**はどれか。
 
@@ -8,7 +12,7 @@
 - 帰結 → `theorem`
 - 外部検証が要るもの → Lean に入れず `docs/EMPIRICAL.md` に記録
 
-正本は指示書 `../rcas-lean4-instructions.md`。
+正本は指示書 `docs/instructions/rcas-lean4-instructions.md`。サーベイ反映の追加は `docs/instructions/rcas-lean-survey-additions.md`。
 
 ## ビルド
 
@@ -19,7 +23,7 @@ lake build
 
 `lake build` は `RCAS/Audit.lean` も含む。ここで `RCAS` 名前空間の全宣言が `propext` / `Classical.choice` / `Quot.sound` 以外の公理（`sorry` を含む）に依存していないかを検査し、違反があればビルドが失敗する。
 
-現在の検査対象は **959 宣言**（補助宣言を含む。2026-10-05 時点）。検査は `Audit.lean` が import したモジュールだけを見るので、新しいファイルは `Audit.lean` の import に加えること。
+現在の検査対象は **969 宣言**（補助宣言を含む。2026-10-05 時点）。検査は `Audit.lean` が import したモジュールだけを見るので、新しいファイルは `Audit.lean` の import に加えること。
 
 ## バージョン
 
@@ -68,11 +72,22 @@ docs/
   NO_ALLOCATION_SPEC.md   利益配分をモデルに含めない理由の仕様
   OUTPUT_OUTCOME_SPEC.md  capability → アウトプット → アウトカムの仕様
   OUTPUT_CONSEQUENCES_SPEC.md 分解からの帰結（③・利益配分）の仕様
-sources/              著者が置く原稿（参照のみ）
+  instructions/       指示書（正本）
+sources/              著者が置く原稿（参照のみ。公開リポジトリには含めない）
 ```
 
 ## 技術的な注記
 
 - 各ファイルは `RCAS.Basic` 経由で `import Mathlib` 全体を読み込む。
 - 固定した Mathlib では `deriving Fintype` が失敗する（`Finset` のメンバーシップ周りの不整合）。有限型が必要な例（`Constraint.lean` の `Example.Atom`）では `Fintype` インスタンスを手で書いている。
-- Mathlib 標準の linter 群を有効にしている。著作権ヘッダの linter（`linter.style.header`）だけは、著者・ライセンスが未定のため `lakefile.toml` で無効化している。
+- Mathlib 標準の linter 群を有効にしている。著作権ヘッダの linter（`linter.style.header`）だけは無効化している（ファイルごとの著作権ヘッダは置かず、ライセンスはルートの `LICENSE` で示す）。
+
+## 引用
+
+引用情報は `CITATION.cff`（GitHub の「Cite this repository」）と、Zenodo のメタデータ `.zenodo.json` にある。Zenodo の DOI は、GitHub のリリースごとに発行される。
+
+## ライセンス
+
+Copyright 2026 Franny Philos Sophia
+
+[Apache License 2.0](LICENSE) で公開する。

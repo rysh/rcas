@@ -1,6 +1,6 @@
 # 対応表（CORRESPONDENCE）
 
-指示書 `rcas-lean4-instructions.md` の各項目と Lean の宣言の対応。
+指示書 `docs/instructions/rcas-lean4-instructions.md` の各項目と Lean の宣言の対応。
 
 - 種別：**定義**（語彙）／**前提**（構造体フィールド・定理の仮定）／**帰結**（証明済み `theorem`）／**範囲外**（Lean に入れないもの）
 - 状態：**証明済み**／**範囲外**（未証明・未着手の項目はない）
@@ -303,7 +303,7 @@ Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている�
 
 ## サーベイ反映の追加（Observable / TaskType / OperatingMode / Motivation / Escalation）
 
-追加指示書 `../rcas-lean-survey-additions.md`（2026-10-04）による。実装方針は `docs/SURVEY_ADDITIONS_SPEC.md`、指示書からの補正は `docs/DEVIATIONS.md`。既存ファイル（Phase 1・2・Performance.lean）は書き換えていない。
+追加指示書 `docs/instructions/rcas-lean-survey-additions.md`（2026-10-04）による。実装方針は `docs/SURVEY_ADDITIONS_SPEC.md`、指示書からの補正は `docs/DEVIATIONS.md`。既存ファイル（Phase 1・2・Performance.lean）は書き換えていない。
 
 ### §1 努力の可観測性（Observable.lean）
 

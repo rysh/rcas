@@ -42,3 +42,13 @@ Phase 2 の定理は次の前提からの帰結であり、前提そのものが
 | 20 | ドメインのフロンティアが `max_i k·e` で、量が `Σ e·φ(k)` で表せること。`φ`、`θ`、`Ψ`、`w` の形と値 | `frontier`、`volume`、`carriers`、`teamPerformance` の定義 |
 | 21 | トップ自身が他のメンバーとの相互作用から学ぶこと（上限が上がるための条件） | PM1 `KnowledgeSharing.ceiling_lt_iff` |
 | 22 | エンゲージメントがナレッジシェアと独立に保たれること、あるいは下限 `eMin` を下回らないこと | PS3・PV・PR2・PT1 の「`e` 固定」、PR3 の仮定 `heMin` |
+
+## サーベイ反映の追加が置いている前提
+
+| # | 仮説 | Lean の前提 |
+|---|---|---|
+| 23 | escalation 率が manager dependence `D_t` と比例するか（比例するなら、トップがすべての問題を解けることが従う：`top_solves_all_of_proportional`） | ESC3 の仮定 `α > 0`、`hr : r t = α · D t`（`proportional_recurrence_iff` ほか） |
+| 24 | スクラムのプランニング＋デイリーが、Holmström の「努力観察不能」前提を実際に覆すか | OB1 `not_outputOnly_of_effortObservable`、OB2 `proportionalShare_spec`（`EffortObservable` が成り立つ環境を前提とする） |
+| 25 | チームが diffusion／specialization のフェーズ切替を自律的に行うか、それが V・S・F にどう影響するか | OM1–OM3 の `mode`、`η_base`、`δ`（`schedule_monotone`、`ModeDynamics.*`） |
+| 26 | Deci et al. (1999) の d = −0.88 が autonomous engagement 環境でも再現されるか。統制的報酬の効果 `γ` と承認的フィードバックの効果 `β` の符号・大きさ、動機づけの移行 | SDT1 `Example.sdt1`・`engagementPath_succ_lt` の `γ > 0`、SDT2 `engagementPath_monotone` の `β ≥ 0` |
+| 27 | 問題の難易度分布 `F` がトップの水準で連続か（跳びがあると escalation はトップの水準まで下がらない） | ESC2 の仮定 `ContinuousAt F (k 0 h)` |

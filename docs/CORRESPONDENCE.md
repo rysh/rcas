@@ -163,7 +163,7 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 | 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
 |---|---|---|---|---|---|
 | 主要定理の `#print axioms` | `#print axioms ...` | Audit.lean | — | 確認済み（標準3公理以下） | — |
-| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2・拡張を含む全 563 宣言） | — |
+| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2・拡張・サーベイ反映を含む全 822 宣言） | — |
 
 ## Phase 2
 
@@ -265,7 +265,7 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 
 ### 監査（Phase 2 分）
 
-Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2・拡張を合わせた全 563 宣言。
+Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2・拡張・サーベイ反映を合わせた全 822 宣言。
 
 ## 拡張：ドメイン別パフォーマンスとナレッジシェア（Performance.lean）
 
@@ -299,6 +299,98 @@ Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている�
 | **PT1** 全ドメインでシェアが働けば P は単調非減少 | `teamPerformance_monotone` | Performance.lean | 帰結 | 証明済み | `w ≥ 0`、`Ψ` は各引数で単調、`e` 固定 |
 | 1人の専門家 → 分散した専門性（F は 1 のまま、V は 1 → 2、N は 1 → 3、1人離脱への耐性なし → あり） | `Example.oneExpert_to_distributed` | Performance.lean | 帰結（具体例） | 証明済み | — |
 | 安定性を確率として扱う版、`S = g(N)` の具体形 | — | — | 範囲外 | 範囲外 | `N` と `ToleratesLoss` で表す（仕様） |
+
+## サーベイ反映の追加（Observable / TaskType / OperatingMode / Motivation / Escalation）
+
+追加指示書 `../rcas-lean-survey-additions.md`（2026-10-04）による。実装方針は `docs/SURVEY_ADDITIONS_SPEC.md`、指示書からの補正は `docs/DEVIATIONS.md`。既存ファイル（Phase 1・2・Performance.lean）は書き換えていない。
+
+### §1 努力の可観測性（Observable.lean）
+
+| 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
+|---|---|---|---|---|---|
+| チーム生産環境 | `TeamProduction` | Observable.lean | 定義 | — | — |
+| Holmström の前提（指示書の形） | `OutputOnlyReward` | Observable.lean | 定義 | — | — |
+| 指示書の `OutputOnlyReward` はその型で自明に成り立つ | `outputOnlyReward_trivial` | Observable.lean | 帰結（定義から直ちに） | 証明済み | — |
+| 予算均衡 | `BudgetBalanced` | Observable.lean | 定義 | — | — |
+| 努力が観察され報酬に使われる | `EffortObservable` | Observable.lean | 定義 | — | — |
+| Holmström の前提（努力を参照しうる報酬について） | `OutputOnly` | Observable.lean | 定義 | — | 指示書の型の不一致を補正（S-1） |
+| **OB1** 努力が使われれば産出のみの報酬ではない | `not_outputOnly_of_effortObservable` | Observable.lean | 帰結（定義から直ちに） | 証明済み | — |
+| OB1 の強い形：産出のみ ⇔ 努力を使わない | `outputOnly_iff_not_effortObservable` | Observable.lean | 帰結 | 証明済み | — |
+| 努力比例配分 | `proportionalShare` | Observable.lean | 定義 | — | — |
+| **OB2** 予算均衡 | `proportionalShare_budgetBalanced` | Observable.lean | 帰結 | 証明済み | `e 0 + e 1 > 0`（指示書どおり） |
+| **OB2** 努力が使われる | `proportionalShare_effortObservable` | Observable.lean | 帰結 | 証明済み | — |
+| **OB2** 限界報酬 = `e_j/(e_0+e_1)²·q` | `proportionalShare_marginal` | Observable.lean | 帰結 | 証明済み | `q` 固定 |
+| **OB2** 限界報酬が正 | `proportionalShare_marginal_pos` | Observable.lean | 帰結 | 証明済み | 両者の努力 > 0、`q > 0`（S-2） |
+| OB2 まとめ | `proportionalShare_spec` | Observable.lean | 帰結 | 証明済み | 同上 |
+| 相手の努力 0 では限界報酬は 0 | `proportionalShare_marginal_zero` | Observable.lean | 帰結（反例） | 証明済み | — |
+| Holmström の定理そのもの、効率的均衡の達成 | — | — | 範囲外 | 範囲外 | 指示書の指定。OB2 は前提が外れる予算均衡スキームの存在までを示す |
+
+### §2 Steiner のタスク類型（TaskType.lean）
+
+| 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
+|---|---|---|---|---|---|
+| タスク類型・集約 | `TaskType`, `aggregate` | TaskType.lean | 定義 | — | — |
+| disjunctive = ceiling／frontier、additive = volume | `aggregate_disjunctive_eq_ceiling`, `..._eq_frontier`, `aggregate_additive_eq_volume` | TaskType.lean | 帰結（定義から直ちに） | 証明済み | — |
+| 各類型の集約は単調 | `aggregate_mono` | TaskType.lean | 帰結 | 証明済み | — |
+| **ST1**（能力）シェアだけで disjunctive 集約は不変 | `KnowledgeSharing.aggregate_disjunctive_const` | TaskType.lean | 帰結 | 証明済み | トップ固定（S-3） |
+| **ST4**（能力）シェアだけで disjunctive 集約は上がらない | `KnowledgeSharing.aggregate_disjunctive_not_rise` | TaskType.lean | 帰結 | 証明済み | トップ固定 |
+| **ST1**（実効水準 k·e）不変 | `KnowledgeSharing.aggregate_disjunctive_eff_const` | TaskType.lean | 帰結 | 証明済み | トップ固定、**トップが最も関与**（S-3） |
+| **ST4**（実効水準）上がらない | `KnowledgeSharing.aggregate_disjunctive_eff_not_rise` | TaskType.lean | 帰結 | 証明済み | 同上 |
+| トップが最も関与していなければ上がる | `Example.disjunctive_can_rise` | TaskType.lean | 帰結（反例） | 証明済み | — |
+| 実効水準の disjunctive 集約は単調非減少で初期の上限以下（PS2・PS3） | `KnowledgeSharing.aggregate_disjunctive_eff_bounds` | TaskType.lean | 帰結 | 証明済み | トップ固定 |
+| **ST2** additive 集約は単調非減少（PV1） | `KnowledgeSharing.aggregate_additive_monotone` | TaskType.lean | 帰結 | 証明済み | `φ` 単調、`e` 固定 |
+| **ST3** conjunctive 集約は単調非減少 | `KnowledgeSharing.aggregate_conjunctive_monotone` | TaskType.lean | 帰結 | 証明済み | `e` 固定、`0 ≤ e` |
+| ST3：最弱メンバーの能力はトップの水準に収束 | `KnowledgeSharing.tendsto_aggregate_conjunctive` | TaskType.lean | 帰結 | 証明済み | トップ固定、`η ≥ ηMin > 0` |
+
+### §3 操作モード切替（OperatingMode.lean）
+
+| 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
+|---|---|---|---|---|---|
+| 操作モード・切替スケジュール | `OperatingMode`, `modeSchedule` | OperatingMode.lean | 定義 | — | — |
+| スケジュールの η を渡した追いつきはナレッジシェア | `knowledgeSharing_of_schedule` | OperatingMode.lean | 帰結 | 証明済み | `0 ≤ η_base ≤ 1` |
+| **OM1**（モデル A）specialization の時刻にトップも変わらなければ何も変わらず、量・担える人は保存 | `KnowledgeSharing.schedule_specialization_eq`, `..._preserves` | OperatingMode.lean | 帰結 | 証明済み | その時刻にトップも学ばない（S-4） |
+| **OM2**（モデル A）どんな切替でも量・担える人数は単調非減少 | `schedule_monotone` | OperatingMode.lean | 帰結 | 証明済み | — |
+| OM2：diffusion の時刻に量が厳密に増える | `KnowledgeSharing.schedule_volume_lt_succ` | OperatingMode.lean | 帰結 | 証明済み | PV2 の条件、`η_base > 0` |
+| **OM3**（モデル A）specialization で上限が上がる ⇔ トップが学ぶ | `KnowledgeSharing.schedule_specialization_ceiling_lt_iff` | OperatingMode.lean | 帰結 | 証明済み | — |
+| 現在の上限への追いつきは上限を保つ | `ceiling_catchUp` | OperatingMode.lean | 帰結 | 証明済み | `η ≤ 1`（`η ≥ 0` は不要） |
+| 学習で上限が上がる ⇔ 誰かが上限を超える | `ceiling_lt_ceiling_add_iff` | OperatingMode.lean | 帰結 | 証明済み | — |
+| 独立学習を含むモード力学（モデル B） | `ModeDynamics` | OperatingMode.lean | 定義・前提 | — | 新しい力学（S-4） |
+| **OM2**（モデル B）量・担える人数・フロンティアは単調非減少 | `ModeDynamics.volume_monotone`, `card_carriers_monotone`, `frontier_monotone` | OperatingMode.lean | 帰結 | 証明済み | `e` 固定 |
+| diffusion の時刻に上限は不変 | `ModeDynamics.ceiling_diffusion` | OperatingMode.lean | 帰結 | 証明済み | — |
+| **OM3**（モデル B）specialization で上限が上がる ⇔ 誰かの独立学習が上限を超える | `ModeDynamics.ceiling_lt_iff_of_specialization` | OperatingMode.lean | 帰結 | 証明済み | — |
+| 上限が上がるのは specialization の時刻に限る | `ModeDynamics.specialization_of_ceiling_lt` | OperatingMode.lean | 帰結 | 証明済み | — |
+| **OM1**（モデル B）学習のない specialization では何も変わらない | `ModeDynamics.eq_of_specialization_of_no_learning` | OperatingMode.lean | 帰結 | 証明済み | — |
+| OM3 の例：トップ以外の学習で上限 1 → 3/2、次の diffusion で保たれる | `Example.specialization_raises_ceiling` | OperatingMode.lean | 帰結 | 証明済み | — |
+
+### §4 SDT 連続体上の engagement（Motivation.lean）
+
+| 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
+|---|---|---|---|---|---|
+| 動機づけ連続体・autonomous・controlled | `MotivationType`, `rank`, `isAutonomous`, `isControlled` | Motivation.lean | 定義 | — | — |
+| autonomous ⇔ rank ≥ 3、autonomous と controlled は両立しない | `MotivationType.isAutonomous_iff`, `not_isAutonomous_and_isControlled` | Motivation.lean | 帰結（定義から直ちに） | 証明済み | — |
+| autonomous motivation に基づくエンゲージメント | `AutonomousEngagement` | Motivation.lean | 定義 | — | — |
+| 量・担える人・フロンティアはエンゲージメントについて単調 | `volume_mono_engagement`, `carriers_mono_engagement`, `frontier_mono_engagement` | Motivation.lean | 帰結 | 証明済み | `0 ≤ φ(k)`／`0 ≤ k` |
+| 2経路のエンゲージメント力学（`β`：承認的フィードバック、`γ`：統制的報酬） | `engagementPath` | Motivation.lean | 定義 | — | `β ≥ 0`・`γ ≥ 0` は前提（S-5） |
+| **SDT2** 統制的報酬のない時刻には下がらない／なければ単調非減少 | `engagementPath_le_succ`, `engagementPath_monotone` | Motivation.lean | 帰結（前提からほぼ直ちに） | 証明済み | `β ≥ 0` |
+| **SDT2** autonomy を保った承認で厳密に上がる | `engagementPath_lt_succ` | Motivation.lean | 帰結 | 証明済み | `β > 0` |
+| **SDT1** 統制的報酬で下がる（1歩） | `engagementPath_succ_lt` | Motivation.lean | 帰結（前提からほぼ直ちに） | 証明済み | `γ > 0` |
+| **SDT1** 具体例：0.8（identified）→ 0.5（external）、autonomous でなくなり、担える人でなくなる | `Example.sdt1` | Motivation.lean | 帰結（具体例） | 証明済み | — |
+| 動機づけの移行ダイナミクス、Deci et al. (1999) の効果量 | — | — | 範囲外 | 範囲外 | EMPIRICAL #26（指示書の指定） |
+
+### §5 knowledge hierarchy と escalation（Escalation.lean）
+
+| 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
+|---|---|---|---|---|---|
+| escalation 率 1 − F z、チーム平均 | `escalationRate`, `teamEscalation` | Escalation.lean | 定義 | — | — |
+| **ESC1** 知識が上がれば escalation は下がる | `escalationRate_antitone` | Escalation.lean | 帰結（定義から直ちに） | 証明済み | `F` 単調 |
+| ESC1：ナレッジシェアのもとで各メンバーの率は時間について非増加 | `KnowledgeSharing.escalation_antitone` | Escalation.lean | 帰結 | 証明済み | — |
+| **ESC2** 各メンバーの率はトップの率に収束 | `KnowledgeSharing.tendsto_escalation` | Escalation.lean | 帰結 | 証明済み | トップ固定、`η ≥ ηMin > 0`、**`F` が `k_h` で連続**（S-6） |
+| ESC2：チーム平均も収束 | `KnowledgeSharing.tendsto_teamEscalation` | Escalation.lean | 帰結 | 証明済み | 同上 |
+| 連続性を外すと収束しない | `Example.escalation_needs_continuity` | Escalation.lean | 帰結（反例） | 証明済み | — |
+| チームの誰も解けない問題の率はシェアだけでは変わらない | `KnowledgeSharing.ceilingEscalation_const` | Escalation.lean | 帰結（PS2 の系） | 証明済み | トップ固定 |
+| **ESC3** `r = α·D`（`α > 0`）なら D の漸化式 ⇔ r の漸化式 | `proportional_recurrence_iff` | Escalation.lean | 帰結 | 証明済み | 比例は前提（EMPIRICAL #23） |
+| ESC3：r の閉形式・0 への収束・有限時間で閾値以下 | `proportional_escalation_eq`, `..._tendsto_zero`, `..._eventually_le` | Escalation.lean | 帰結 | 証明済み | 同上 |
+| ESC3 の帰結：比例・D の減衰・ESC2 の条件がそろうと、トップはすべての問題を解ける（`F (k 0 h) = 1`） | `top_solves_all_of_proportional` | Escalation.lean | 帰結 | 証明済み | — |
 
 ## 指示書のスケッチからの調整
 

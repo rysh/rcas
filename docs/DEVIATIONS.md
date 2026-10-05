@@ -108,3 +108,59 @@ Phase 1・Phase 2 ともにない（`sorry` は 0 件。`Audit.lean` の `#asser
 | 安定性 | `S_d = g(N_d)`（`g' > 0`）または確率 | `N_d` と `ToleratesLoss m`（PR1：`m < N_d` と同値） | 確率モデルを置かずに「誰が抜けても残る」を直接表す。`g` が単調なら `g(N_d)` の単調性は PR2 から直ちに従う |
 | 能力の非負性 | なし | `0 ≤ k 0 i` | PF1 の `k·e ≤ k`（`e ≤ 1`）に必要 |
 | 収束の速さ | なし | `η t i ≥ ηMin > 0`（`i ≠ h`） | PV3・PR3 で D5 の補題（`dependence_tendsto_zero_of_timeVarying`）を使うため |
+
+## サーベイ反映の追加（追加指示書 2026-10-04）で補正した箇所
+
+追加指示書の命題のうち、そのままでは述べられない・偽である・空虚であるものを、最初の指示書のルール4に従って補正した。反例はすべて Lean で証明済み。
+
+### S-1　OB1：`OutputOnlyReward` が空虚、型が合わない
+
+- **元の主張**：`EffortObservable` のとき `OutputOnlyReward` は成り立たない。
+- **問題**：
+  1. `OutputOnlyReward (s : ι → ℝ → ℝ)` は、その型のどんな `s` についても成り立つ（`f := s i`）。証明：`outputOnlyReward_trivial`。
+  2. `EffortObservable` は別の型 `s : ι → (ι → ℝ) → ℝ → ℝ` についての述語なので、同じ `s` に対して2つを並べられない。
+- **補正**：努力プロファイルを参照しうる報酬について、Holmström の前提を `OutputOnly s :≡ ∀ i, ∃ f, ∀ e q, s i e q = f q` と定義し、OB1 を `not_outputOnly_of_effortObservable` として示した。より強く `OutputOnly s ↔ ¬ EffortObservable s` も示した。指示書の `OutputOnlyReward` 型の報酬を努力プロファイル上の報酬とみなすと、努力を使わないことも示した（`not_effortObservable_of_outputOnlyReward`）。
+
+### S-2　OB2：限界報酬が正になる条件
+
+- **元の主張**：`e 0 + e 1 > 0` なら、予算均衡・`EffortObservable`・各人の限界報酬が正、のすべてが成り立つ。
+- **追加した仮定**：限界報酬 `e_j / (e_0 + e_1)² · q`（`q` を固定して `e_i` で微分）が正であるには、相手の努力 `e_j > 0` と `q > 0` が要る。
+- **反例**：`proportionalShare_marginal_zero`（`e = (1, 0)`、`q = 1` で限界報酬 0。相手の努力が 0 なら、自分の努力によらず取り分は産出全体）。
+- **注記**：OB2 が示すのは「Holmström の前提が外れる予算均衡な報酬スキームが存在する」ことまでである。そのスキームのもとで効率的な均衡が達成されるかは示していない。追加指示書の「Holmström の impossibility が成立しない環境の構成的存在証明」は、この意味（前提が成立しない）に限って読む。
+
+### S-3　ST1・ST4：disjunctive 集約が不変であるための条件
+
+- **元の主張**：`aggregate .disjunctive perf = frontier` のとき、ナレッジシェア（`η ≤ 1`）で集約は変わらない（ST1）。上がる例は存在しない（ST4）。
+- **問題**：`frontier`（`perf = k·e` の最大値）は、シェアだけでも上がりうる（PS3）。トップより関与の高いメンバーがトップの能力に追いつくと上がる。
+- **反例**：`Example.disjunctive_can_rise`。トップの関与 1/2、他の2人が 1、`η = 1/2`、トップ固定のとき、t = 0 → 2 で 1/2 → 3/4 以上に上がる。
+- **追加した仮定**：
+  1. `KnowledgeSharing` はトップの学習を許すので、「シェアだけ（トップ固定）」を仮定に置く。
+  2. 実効水準 `k·e` の版では、さらに「トップが最も関与している」（`∀ i, e i ≤ e h`）を置く。
+- **成り立つ形**：
+  - 能力 `k` の disjunctive 集約（= `ceiling`）はトップ固定で不変（`aggregate_disjunctive_const`・`..._not_rise`）。
+  - 実効水準の版は上の2つの仮定のもとで不変（`aggregate_disjunctive_eff_const`・`..._eff_not_rise`）。
+  - 一般には単調非減少で、初期の上限を超えない（`aggregate_disjunctive_eff_bounds`）。
+
+### S-4　OM1・OM3：`KnowledgeSharing` で表せない独立学習
+
+- **OM1（モデル A）**：`KnowledgeSharing` はトップの学習を許すので、specialization の時刻にも量が増えうる。「保存される」には、その時刻にトップも学ばないことを仮定に置いた（`schedule_specialization_eq`）。
+- **OM3**：`KnowledgeSharing` に `η = 0` を渡すと、トップ以外の能力は変えられない（追いつきの式が `k (t+1) i = k t i` になる）。そのため、指示書の「specialization に独立した学習 `k_i(t+1) = k_i(t) + δ_i` を入れる」はこの構造体では表せない。そこで次のように分けた。
+  - モデル A の範囲：上限が上がる ⇔ トップが学ぶ（`schedule_specialization_ceiling_lt_iff`）。
+  - 全員の独立学習を表すために、新しい力学 `ModeDynamics`（モデル B）を定義した。diffusion では全員が**現在の上限**に追いつき、specialization では全員が `δ ≥ 0` で学ぶ。
+  - モデル B では、上限が上がるのは specialization の時刻に限り、そのとき上限が上がる ⇔ 誰かが上限を超える（`ceiling_lt_iff_of_specialization`・`specialization_of_ceiling_lt`）。
+- **補足**：指示書の「PM1 の条件 ∃i : k_i > K*」は、Performance.lean の PM1（上限が上がる ⇔ トップが学ぶ）とは形が違う。モデル B の `ceiling_lt_ceiling_add_iff` がこの形に当たる。
+
+### S-5　SDT1・SDT2：エンゲージメントの力学を前提として置いた
+
+- 指示書は「外発的報酬で下がりうる」「承認的フィードバックは下げない（E1 の engagement 版）」を求めているが、エンゲージメントの力学を指定していない。そこで2経路の力学 `engagementPath`（承認：`+β`、統制的報酬：`−γ`）を置き、`β ≥ 0`・`γ ≥ 0` を前提として明示した。
+- SDT2 は `β ≥ 0` から、SDT1 の1歩版は `γ > 0` から、ほぼ直ちに出る。SDT1 の具体例（0.8 → 0.5）は、モデルの語彙で表せることを示すもので、Deci et al. (1999) の効果量を導くものではない。
+
+### S-6　ESC2：分布関数の連続性
+
+- **元の主張**：全メンバーの知識がトップの水準に収束すれば、escalation 率はトップの率に収束する。
+- **追加した仮定**：`F` がトップの水準 `k 0 h` で連続（`ContinuousAt F (k 0 h)`）。累積分布関数は右連続だが、メンバーの知識は下から近づくので、左側の連続性が要る。
+- **反例**：`Example.escalation_needs_continuity`。すべての問題の難易度がちょうど 1（`F` が 1 で跳ぶ）だと、トップ（能力 1）の率は 0 だが、`1 − (1/2)^t < 1` のメンバーの率はずっと 1 で、収束しない。
+
+### ESC3 の帰結（補正ではなく記録）
+
+`top_solves_all_of_proportional`：チーム平均の escalation 率が依存 D に比例し、D が 0 に減衰し、ESC2 の条件も満たされるなら、極限の一意性から `F (k 0 h) = 1`、すなわちトップはすべての問題を自分で解ける。比例仮説（EMPIRICAL #23）は、この強い含意を伴う。チームの誰も解けない問題の率 `1 − F (ceiling)` はシェアだけでは変わらない（`ceilingEscalation_const`）ので、この率が正なら比例と D → 0 は両立しない。

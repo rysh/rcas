@@ -10,6 +10,11 @@ import RCAS.Decision
 import RCAS.FutureChoice
 import RCAS.SelfManaging
 import RCAS.Performance
+import RCAS.Observable
+import RCAS.TaskType
+import RCAS.OperatingMode
+import RCAS.Motivation
+import RCAS.Escalation
 import RCAS.Field.Forcing
 import RCAS.Field.StuartLandau
 import RCAS.Field.Coupling

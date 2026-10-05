@@ -9,6 +9,11 @@ import RCAS.Decision
 import RCAS.FutureChoice
 import RCAS.SelfManaging
 import RCAS.Performance
+import RCAS.Observable
+import RCAS.TaskType
+import RCAS.OperatingMode
+import RCAS.Motivation
+import RCAS.Escalation
 import RCAS.Field.Forcing
 import RCAS.Field.StuartLandau
 import RCAS.Field.Coupling
@@ -26,6 +31,9 @@ Two checks:
 2. `#assert_standard_axioms_in RCAS`, which makes the build **fail** if any declaration in the
    namespace `RCAS` depends on an axiom other than `propext`, `Classical.choice` and
    `Quot.sound`. In particular a leftover `sorry` (`sorryAx`) fails the build.
+
+The check sees only the modules imported here: a new file must be added to the imports above to
+be covered (being in the namespace `RCAS` is not enough).
 -/
 
 open Lean Elab Command in
@@ -205,3 +213,69 @@ elab "#assert_standard_axioms_in " ns:ident : command => do
 #print axioms RCAS.KnowledgeSharing.eventually_toleratesLoss
 #print axioms RCAS.teamPerformance_monotone
 #print axioms RCAS.Example.oneExpert_to_distributed
+
+/-! ### Survey addition §1: Observable -/
+#print axioms RCAS.outputOnlyReward_trivial
+#print axioms RCAS.not_outputOnly_of_effortObservable
+#print axioms RCAS.outputOnly_iff_not_effortObservable
+#print axioms RCAS.proportionalShare_budgetBalanced
+#print axioms RCAS.proportionalShare_effortObservable
+#print axioms RCAS.proportionalShare_marginal
+#print axioms RCAS.proportionalShare_marginal_pos
+#print axioms RCAS.proportionalShare_spec
+#print axioms RCAS.proportionalShare_marginal_zero
+
+/-! ### Survey addition §2: TaskType -/
+#print axioms RCAS.aggregate_mono
+#print axioms RCAS.KnowledgeSharing.aggregate_disjunctive_const
+#print axioms RCAS.KnowledgeSharing.aggregate_disjunctive_not_rise
+#print axioms RCAS.KnowledgeSharing.aggregate_disjunctive_eff_const
+#print axioms RCAS.KnowledgeSharing.aggregate_disjunctive_eff_not_rise
+#print axioms RCAS.KnowledgeSharing.aggregate_disjunctive_eff_bounds
+#print axioms RCAS.Example.disjunctive_can_rise
+#print axioms RCAS.KnowledgeSharing.aggregate_additive_monotone
+#print axioms RCAS.KnowledgeSharing.aggregate_conjunctive_monotone
+#print axioms RCAS.KnowledgeSharing.tendsto_aggregate_conjunctive
+
+/-! ### Survey addition §3: OperatingMode -/
+#print axioms RCAS.knowledgeSharing_of_schedule
+#print axioms RCAS.KnowledgeSharing.schedule_specialization_eq
+#print axioms RCAS.KnowledgeSharing.schedule_specialization_preserves
+#print axioms RCAS.KnowledgeSharing.schedule_volume_lt_succ
+#print axioms RCAS.KnowledgeSharing.schedule_specialization_ceiling_lt_iff
+#print axioms RCAS.schedule_monotone
+#print axioms RCAS.ceiling_catchUp
+#print axioms RCAS.ceiling_lt_ceiling_add_iff
+#print axioms RCAS.ModeDynamics.volume_monotone
+#print axioms RCAS.ModeDynamics.card_carriers_monotone
+#print axioms RCAS.ModeDynamics.frontier_monotone
+#print axioms RCAS.ModeDynamics.ceiling_diffusion
+#print axioms RCAS.ModeDynamics.ceiling_lt_iff_of_specialization
+#print axioms RCAS.ModeDynamics.specialization_of_ceiling_lt
+#print axioms RCAS.ModeDynamics.eq_of_specialization_of_no_learning
+#print axioms RCAS.Example.specialization_raises_ceiling
+
+/-! ### Survey addition §4: Motivation -/
+#print axioms RCAS.MotivationType.isAutonomous_iff
+#print axioms RCAS.MotivationType.not_isAutonomous_and_isControlled
+#print axioms RCAS.volume_mono_engagement
+#print axioms RCAS.carriers_mono_engagement
+#print axioms RCAS.frontier_mono_engagement
+#print axioms RCAS.engagementPath_le_succ
+#print axioms RCAS.engagementPath_monotone
+#print axioms RCAS.engagementPath_lt_succ
+#print axioms RCAS.engagementPath_succ_lt
+#print axioms RCAS.Example.sdt1
+
+/-! ### Survey addition §5: Escalation -/
+#print axioms RCAS.escalationRate_antitone
+#print axioms RCAS.KnowledgeSharing.escalation_antitone
+#print axioms RCAS.KnowledgeSharing.tendsto_escalation
+#print axioms RCAS.KnowledgeSharing.tendsto_teamEscalation
+#print axioms RCAS.KnowledgeSharing.ceilingEscalation_const
+#print axioms RCAS.Example.escalation_needs_continuity
+#print axioms RCAS.proportional_recurrence_iff
+#print axioms RCAS.proportional_escalation_eq
+#print axioms RCAS.proportional_escalation_tendsto_zero
+#print axioms RCAS.proportional_escalation_eventually_le
+#print axioms RCAS.top_solves_all_of_proportional

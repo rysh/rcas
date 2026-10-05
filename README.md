@@ -1,5 +1,7 @@
 # RCAS — Reference–Choice Adaptive System の Lean 4 定式化
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23159467.svg)](https://doi.org/10.5281/zenodo.23159467)
+
 > **English summary.** A machine-checked formalization, in Lean 4 with Mathlib, of a mathematical model of a management methodology: set reference points (purpose, criteria and boundaries) and leave the choice of method to the individual or the team. It separates what *follows formally* from the model's premises from what needs empirical verification. Premises are structure fields or theorem hypotheses (no `axiom`), consequences are theorems, and empirical claims are listed in `docs/EMPIRICAL.md`. The build has no `sorry` and fails if any declaration depends on an axiom other than `propext`, `Classical.choice` and `Quot.sound`. Documentation is in Japanese; Lean identifiers and docstrings are in English.
 
 マネジメント方法論「参照点を置き、選択は本人またはチームに残す」の数理モデルを、Lean 4 + Mathlib で機械検証できる形にしたもの。名称は RCAS（Reference–Choice Adaptive System）、名前空間は `RCAS`。
@@ -85,6 +87,11 @@ sources/              著者が置く原稿（参照のみ。公開リポジト�
 ## 引用
 
 引用情報は `CITATION.cff`（GitHub の「Cite this repository」）と、Zenodo のメタデータ `.zenodo.json` にある。Zenodo の DOI は、GitHub のリリースごとに発行される。
+
+- 全版共通（常に最新版を指す）：[10.5281/zenodo.23159467](https://doi.org/10.5281/zenodo.23159467)
+- v0.1.0：[10.5281/zenodo.23159468](https://doi.org/10.5281/zenodo.23159468)
+
+> Franny Philos Sophia. *RCAS: A Lean 4 Formalization of the Reference–Choice Adaptive System* (v0.1.0). Zenodo, 2026. https://doi.org/10.5281/zenodo.23159468
 
 ## ライセンス
 

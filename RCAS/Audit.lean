@@ -16,6 +16,7 @@ import RCAS.Motivation
 import RCAS.Escalation
 import RCAS.NoAllocation
 import RCAS.OutputOutcome
+import RCAS.OutputConsequences
 import RCAS.Field.Forcing
 import RCAS.Field.StuartLandau
 import RCAS.Field.Coupling
@@ -300,7 +301,7 @@ elab "#assert_standard_axioms_in " ns:ident : command => do
 #print axioms RCAS.output_eq_one_of_improves
 #print axioms RCAS.output_mono
 #print axioms RCAS.outcome_le_fit_value
-#print axioms RCAS.outcome_le_value
+#print axioms RCAS.outcome_le_potentialValue
 #print axioms RCAS.outcome_eq_of_meets
 #print axioms RCAS.outcome_lt_of_fit_lt
 #print axioms RCAS.outcome_eq_fit_value_iff
@@ -312,3 +313,14 @@ elab "#assert_standard_axioms_in " ns:ident : command => do
 #print axioms RCAS.KnowledgeSharing.requiredTime_antitone
 #print axioms RCAS.KnowledgeSharing.output_eq_zero_of_ceiling_lt
 #print axioms RCAS.Example.responsibility_example
+
+/-! ### Consequences of the output/outcome decomposition: OutputConsequences -/
+#print axioms RCAS.one_le_output_iff
+#print axioms RCAS.KnowledgeSharing.meets_of_meets
+#print axioms RCAS.KnowledgeSharing.tendsto_frontier
+#print axioms RCAS.KnowledgeSharing.eventually_meets
+#print axioms RCAS.eventually_selfManaging_output
+#print axioms RCAS.pay_sub_eq
+#print axioms RCAS.pay_eq_iff
+#print axioms RCAS.pay_ne_of_fit_ne
+#print axioms RCAS.total_pay_eq_of_meets

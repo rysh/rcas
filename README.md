@@ -49,6 +49,7 @@ RCAS/
   Escalation.lean     サーベイ反映 §5：knowledge hierarchy と escalation（ESC1–ESC3）
   NoAllocation.lean   利益配分をモデルに含めない理由（NA1–NA7、著者の判断 2026-10-05）
   OutputOutcome.lean  capability → アウトプット → アウトカムと責任の範囲（OP・OC・RS・CP）
+  OutputConsequences.lean ③＝アウトプットで SM1 を導出（SO）、努力に応じた利益配分と責任の範囲（AR）
   Field/
     Forcing.lean          §5.1 指示と制約（F1, F2）
     StuartLandau.lean     §5.2 振幅方程式の平衡と導関数（SL1–SL3）
@@ -66,6 +67,7 @@ docs/
   SURVEY_ADDITIONS_SPEC.md サーベイ反映の追加の実装方針
   NO_ALLOCATION_SPEC.md   利益配分をモデルに含めない理由の仕様
   OUTPUT_OUTCOME_SPEC.md  capability → アウトプット → アウトカムの仕様
+  OUTPUT_CONSEQUENCES_SPEC.md 分解からの帰結（③・利益配分）の仕様
 sources/              著者が置く原稿（参照のみ）
 ```
 

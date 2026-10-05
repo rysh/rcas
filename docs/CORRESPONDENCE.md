@@ -153,6 +153,7 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 | 自走状態の四条件 | `SelfManaging` | SelfManaging.lean | 定義 | — | — |
 | ④ ルール更新能力 | `SelfManaging.teamUpdatesRules`（`R (t+1) = RD.update (R t)`） | SelfManaging.lean | 定義（の成分） | — | — |
 | ③ 成果条件 | SM1 の仮定 `hq` | SelfManaging.lean | **前提**（Phase 1 から導けない） | — | — |
+| ③ の意味：アウトプット（著者確認 2026-10-05） | `q t := output g (チーム側 t)`、`qMin := 1` | OutputConsequences.lean | 定義（読み方） | — | この読み方のもとでは③は導ける（`eventually_selfManaging_output`、下の節） |
 | ④ のもとで評価は下がらない | `SelfManaging.J_le_succ` | SelfManaging.lean | 帰結 | 証明済み | — |
 | **SM1** ある時刻以降ずっと自走状態 | `eventually_selfManaging` | SelfManaging.lean | 帰結 | 証明済み | `k 0 ≤ 1`（K1 経由、D-2）、`0 < δ` |
 | ③ は他の前提から従わない | `performance_not_derivable` | SelfManaging.lean | 帰結（反例） | 証明済み | — |
@@ -163,7 +164,7 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 | 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
 |---|---|---|---|---|---|
 | 主要定理の `#print axioms` | `#print axioms ...` | Audit.lean | — | 確認済み（標準3公理以下） | — |
-| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2・拡張・サーベイ反映・NoAllocation・OutputOutcome を含む全 959 宣言） | — |
+| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2・拡張・サーベイ反映・NoAllocation・OutputOutcome・OutputConsequences を含む全 969 宣言） | — |
 
 ## Phase 2
 
@@ -265,7 +266,7 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 
 ### 監査（Phase 2 分）
 
-Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2・拡張・サーベイ反映・NoAllocation・OutputOutcome を合わせた全 959 宣言。
+Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2・拡張・サーベイ反映・NoAllocation・OutputOutcome・OutputConsequences を合わせた全 969 宣言。
 
 ## 拡張：ドメイン別パフォーマンスとナレッジシェア（Performance.lean）
 
@@ -415,30 +416,59 @@ Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている�
 
 ## capability → アウトプット → アウトカムと責任の範囲（OutputOutcome.lean）
 
-著者の依頼（2026-10-05）による拡張。仕様は `docs/OUTPUT_OUTCOME_SPEC.md`。Performance.lean の F・V・S は、この分解の capability の層に当たる。
+著者の依頼（2026-10-05）による拡張。仕様は `docs/OUTPUT_OUTCOME_SPEC.md`。Performance.lean の F・V・S は、この分解の capability の層に当たる。タスクの価値は「潜在価値」と呼ぶ（著者と合意、2026-10-05。適合 1・アウトプット 1 のときにだけ実現する上限）。
 
 | 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
 |---|---|---|---|---|---|
-| タスク（基準が求める水準・量・期間・内在価値） | `Task` | OutputOutcome.lean | 定義（上位が与える） | — | — |
+| タスク（基準が求める水準・量・期間・潜在価値 `potentialValue`） | `Task` | OutputOutcome.lean | 定義（上位が与える） | — | — |
 | 上位から与えられるもの（タスクとビジネス適合 `fit ∈ [0,1]`） | `GivenFromAbove` | OutputOutcome.lean | 定義 | — | — |
 | チーム側（フロンティア・処理量・仕組みの効率） | `TeamSide`, `effThroughput`, `Improves` | OutputOutcome.lean | 定義 | — | — |
 | アウトプット：目的と基準どおりに完了した割合 | `output` | OutputOutcome.lean | 定義 | — | 基準を超える出来栄えは数えない（「一定」の定式化） |
 | 目的と基準を満たす | `MeetsCriteria` | OutputOutcome.lean | 定義 | — | — |
-| アウトカム = 適合 × 内在価値 × アウトプット | `outcome` | OutputOutcome.lean | 定義・**前提**（掛け算の形） | — | EMPIRICAL #30 |
+| アウトカム = 適合 × 潜在価値 × アウトプット | `outcome` | OutputOutcome.lean | 定義・**前提**（掛け算の形） | — | EMPIRICAL #30 |
 | 必要時間 | `requiredTime` | OutputOutcome.lean | 定義 | — | — |
 | **OP1** アウトプット ∈ [0,1]、= 1 ⇔ 基準を満たす | `output_nonneg`, `output_le_one`, `output_eq_one_iff` | OutputOutcome.lean | 帰結 | 証明済み | — |
 | **OP2** 基準を満たした後はアウトプットは一定 | `output_eq_one_of_improves` | OutputOutcome.lean | 帰結 | 証明済み | — |
 | **OP3** アウトプットはチーム側について単調 | `output_mono` | OutputOutcome.lean | 帰結 | 証明済み | — |
-| **OC1** アウトカム ≤ 適合 × 価値 ≤ 内在価値 | `outcome_le_fit_value`, `outcome_le_value` | OutputOutcome.lean | 帰結（定義から直ちに） | 証明済み | — |
+| **OC1** アウトカム ≤ 適合 × 潜在価値 ≤ 潜在価値 | `outcome_le_fit_value`, `outcome_le_potentialValue` | OutputOutcome.lean | 帰結（定義から直ちに） | 証明済み | — |
 | **OC2** 基準を満たせばアウトカム = 適合 × 価値、適合について狭義単調 | `outcome_eq_of_meets`, `outcome_lt_of_fit_lt` | OutputOutcome.lean | 帰結 | 証明済み | `value > 0` |
 | **RS1** チームが到達できる上限は適合 × 価値（上位が決める量だけ）、到達 ⇔ 基準を満たす | `outcome_le_fit_value`, `outcome_eq_fit_value_iff` | OutputOutcome.lean | 帰結 | 証明済み | `fit · value > 0` |
-| **RS2** 基準を満たせば内在価値との差は (1 − 適合) × 価値で、チーム側によらない | `shortfall_eq_of_meets` | OutputOutcome.lean | 帰結 | 証明済み | — |
+| **RS2** 基準を満たせば潜在価値との差は (1 − 適合) × 潜在価値で、チーム側によらない | `shortfall_eq_of_meets` | OutputOutcome.lean | 帰結 | 証明済み | — |
 | **RS3** 同じチーム・同じ基準ならアウトカムの差は上位側の量だけで決まる | `outcome_sub_eq` | OutputOutcome.lean | 帰結 | 証明済み | — |
 | **RS4** 基準を満たした後の改善はアウトカムを変えず、必要時間だけを減らす | `outcome_eq_of_improves`, `requiredTime_le_of_improves` | OutputOutcome.lean | 帰結 | 証明済み | — |
 | **CP1** ナレッジシェアのもとでアウトプットは単調非減少、必要時間は単調非増加 | `KnowledgeSharing.output_monotone`, `requiredTime_antitone` | OutputOutcome.lean | 帰結 | 証明済み | `φ` 単調・非負、`μ ≥ 0`、`e` 固定 |
 | **CP2** シェアだけでは、初期の上限を超える難易度のタスクはずっと達成できない | `KnowledgeSharing.output_eq_zero_of_ceiling_lt` | OutputOutcome.lean | 帰結 | 証明済み | トップ固定 |
 | 例：適合 0.6・価値 100 で 60、仕組み改善で 60 のまま時間は半分、適合 0.9 なら 90 | `Example.responsibility_example` | OutputOutcome.lean | 帰結（具体例） | 証明済み | — |
-| ビジネス適合・内在価値の測り方、タスクの質そのもの | — | — | 範囲外 | 範囲外 | 上位が与えるもの |
+| ビジネス適合・潜在価値の測り方、タスクの質そのもの | — | — | 範囲外 | 範囲外 | 上位が与えるもの |
+
+## アウトプット／アウトカム分解からの帰結（OutputConsequences.lean）
+
+仕様は `docs/OUTPUT_CONSEQUENCES_SPEC.md`。
+
+### A. 自走状態の条件③（アウトプットの意味）
+
+| 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
+|---|---|---|---|---|---|
+| **SO1** `1 ≤ output` ⇔ 基準を満たす | `one_le_output_iff` | OutputConsequences.lean | 帰結 | 証明済み | — |
+| **SO2** 一度基準を満たせば満たし続ける | `KnowledgeSharing.meets_of_meets` | OutputConsequences.lean | 帰結 | 証明済み | `φ` 単調、`μ ≥ 0`、`e` 固定・非負 |
+| フロンティアは「全員がトップの能力」のフロンティアに収束 | `KnowledgeSharing.tendsto_frontier` | OutputConsequences.lean | 帰結 | 証明済み | トップ固定、`η ≥ ηMin > 0` |
+| **SO3** タスクが能力の極限の内側ならいずれ基準を満たす | `KnowledgeSharing.eventually_meets` | OutputConsequences.lean | 帰結 | 証明済み | トップ固定、`η ≥ ηMin > 0`、`φ` 連続、難易度 < 極限フロンティア、量 < 極限実効処理量 × 期間（EMPIRICAL #33） |
+| **SO4** ③を仮定せず導いた SM1 | `eventually_selfManaging_output` | OutputConsequences.lean | 帰結 | 証明済み | SM1 の仮定から `hq` を除き、SO3 の条件を加える |
+
+Phase 1 の `performance_not_derivable` が示すように、Phase 1 だけでは③は導けない。OutputOutcome.lean が capability とアウトプットをつないだことで、③は「与えられたタスクがチームの能力の極限の内側にある」という条件のもとで導けるようになった。
+
+### B. 努力に応じた利益配分と責任の範囲
+
+著者のモデルに配分はない。配分を入れたらどうなるかの、モデル内の事実を記録する。
+
+| 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
+|---|---|---|---|---|---|
+| **AR1** タスクの質（潜在価値・適合）・量が違ってよい2つのタスクで、同じチーム側が両方の基準を満たし、同じ努力なら、報酬の差 = 努力の比率 × (適合·潜在価値 の差)。チーム側の値は差に入らない | `pay_sub_eq` | OutputConsequences.lean | 帰結 | 証明済み | アウトカムの掛け算の形（#30） |
+| **AR2** 同じ努力・同じアウトプットで、報酬が等しい ⇔ 上位が与える 適合·潜在価値 が等しい | `pay_eq_iff` | OutputConsequences.lean | 帰結 | 証明済み | `e i > 0` |
+| AR2（同じタスク）：適合が違えば報酬が違う | `pay_ne_of_fit_ne` | OutputConsequences.lean | 帰結 | 証明済み | `e i > 0`、`potentialValue > 0` |
+| **AR3** 基準を満たした後は、配る総額は適合 × 潜在価値で一定（努力は比率を変えるだけ） | `total_pay_eq_of_meets` | OutputConsequences.lean | 帰結 | 証明済み | 総努力 > 0 |
+| 例：適合 0.6 と 0.9 で、同じ努力 (1,1) の報酬が 30 と 45 | `Example`（`example`） | OutputConsequences.lean | 帰結（具体例） | 証明済み | — |
+| 「努力に応じた利益配分は適切でない」という評価そのもの | — | — | 範囲外 | 範囲外 | 評価は著者の判断。Lean はそれを支える事実（AR1–AR3、NA1–NA3）だけを示す |
 
 ## 指示書のスケッチからの調整
 

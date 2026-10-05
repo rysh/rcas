@@ -8,7 +8,7 @@ Extension requested by the author (2026-10-05); specification in `docs/OUTPUT_OU
 task (difficulty, volume) and capability → output; output and business fit → outcome.
 
 * Given from above (`GivenFromAbove`): the task — the level its purpose and criteria demand
-  (`difficulty`), its amount (`workload`), the period, its inherent value — and how well the
+  (`difficulty`), its amount (`workload`), the period, its potential value — and how well the
   purpose and criteria fit the business (`fit ∈ [0, 1]`). The team cannot answer for these.
 * The team side (`TeamSide`): its frontier, throughput, and the efficiency of its way of working
   (`mechanism`). The team answers for achieving the task, for improving the way of working, and
@@ -16,18 +16,18 @@ task (difficulty, volume) and capability → output; output and business fit →
 * Output (`output`): the fraction of the task completed to the criteria, in `[0, 1]`; it is `1`
   exactly when the purpose and criteria are met, and stays `1` however much more capable the team
   becomes.
-* Outcome (`outcome = fit · value · output`): varies with the business fit, and never exceeds
-  the task's inherent value. That outcome is this product is a premise of the model.
+* Outcome (`outcome = fit · potentialValue · output`): varies with the business fit, and never
+  exceeds the task's potential value. That outcome is this product is a premise of the model.
 
-The bound `fit · value` on the outcome is made only of quantities given from above; once the
-criteria are met, the shortfall from the inherent value is `(1 - fit) · value`, whatever the team
-does. Further improvement on the team side then changes only the time required.
+The bound `fit · potentialValue` on the outcome is made only of quantities given from above; once
+the criteria are met, the shortfall from the potential value is `(1 - fit) · potentialValue`,
+whatever the team does. Further improvement on the team side then changes only the time required.
 
 ## Main results
 
 * `RCAS.output_nonneg`, `RCAS.output_le_one`, `RCAS.output_eq_one_iff` (OP1)
 * `RCAS.output_eq_one_of_improves` (OP2), `RCAS.output_mono` (OP3)
-* `RCAS.outcome_le_fit_value`, `RCAS.outcome_le_value` (OC1), `RCAS.outcome_eq_of_meets`,
+* `RCAS.outcome_le_fit_value`, `RCAS.outcome_le_potentialValue` (OC1), `RCAS.outcome_eq_of_meets`,
   `RCAS.outcome_lt_of_fit_lt` (OC2)
 * `RCAS.outcome_eq_fit_value_iff` (RS1), `RCAS.shortfall_eq_of_meets` (RS2),
   `RCAS.outcome_sub_eq` (RS3), `RCAS.outcome_eq_of_improves`, `RCAS.requiredTime_le_of_improves`
@@ -42,7 +42,7 @@ noncomputable section
 namespace RCAS
 
 /-- A task given from above. Its purpose and criteria fix the level the output must reach and the
-amount; the task carries an inherent value. -/
+amount; the task carries an potential value. -/
 structure Task where
   /-- The level the purpose and criteria demand. -/
   difficulty : ℝ
@@ -50,11 +50,12 @@ structure Task where
   workload : ℝ
   /-- The period in which the output is produced. -/
   period : ℝ
-  /-- The value inherent in the task. -/
-  value : ℝ
+  /-- The potential value of the task: the outcome attainable at full business fit and full
+  output. -/
+  potentialValue : ℝ
   workload_pos : 0 < workload
   period_nonneg : 0 ≤ period
-  value_nonneg : 0 ≤ value
+  potentialValue_nonneg : 0 ≤ potentialValue
 
 /-- What is given from above: the task and how well its purpose and criteria fit the business. -/
 structure GivenFromAbove where
@@ -93,9 +94,9 @@ period. -/
 def MeetsCriteria (g : Task) (s : TeamSide) : Prop :=
   g.difficulty ≤ s.frontier ∧ g.workload ≤ s.effThroughput * g.period
 
-/-- Outcome: business fit × inherent value × output. -/
+/-- Outcome: business fit × potential value × output. -/
 def outcome (a : GivenFromAbove) (s : TeamSide) : ℝ :=
-  a.fit * a.task.value * output a.task s
+  a.fit * a.task.potentialValue * output a.task s
 
 /-- Time required to complete the task. -/
 def requiredTime (g : Task) (s : TeamSide) : ℝ :=
@@ -153,34 +154,37 @@ theorem output_mono (hss' : s.Improves s') (hs' : 0 ≤ s'.effThroughput) :
 
 /-! ### Outcome -/
 
-theorem fit_value_nonneg (a : GivenFromAbove) : 0 ≤ a.fit * a.task.value :=
-  mul_nonneg a.fit_nonneg a.task.value_nonneg
+theorem fit_value_nonneg (a : GivenFromAbove) : 0 ≤ a.fit * a.task.potentialValue :=
+  mul_nonneg a.fit_nonneg a.task.potentialValue_nonneg
 
-/-- **OC1** / **RS1**: whatever the team side, the outcome is at most `fit · value`, a bound made
-only of quantities given from above. -/
+/-- **OC1** / **RS1**: whatever the team side, the outcome is at most `fit · potentialValue`, a
+bound made only of quantities given from above. -/
 theorem outcome_le_fit_value (a : GivenFromAbove) (s : TeamSide) :
-    outcome a s ≤ a.fit * a.task.value :=
+    outcome a s ≤ a.fit * a.task.potentialValue :=
   mul_le_of_le_one_right (fit_value_nonneg a) output_le_one
 
-/-- **OC1**: the outcome never exceeds the value inherent in the task. -/
-theorem outcome_le_value (a : GivenFromAbove) (s : TeamSide) : outcome a s ≤ a.task.value :=
-  (outcome_le_fit_value a s).trans (mul_le_of_le_one_left a.task.value_nonneg a.fit_le_one)
+/-- **OC1**: the outcome never exceeds the potential value of the task. -/
+theorem outcome_le_potentialValue (a : GivenFromAbove) (s : TeamSide) :
+    outcome a s ≤ a.task.potentialValue :=
+  (outcome_le_fit_value a s).trans
+    (mul_le_of_le_one_left a.task.potentialValue_nonneg a.fit_le_one)
 
-/-- **OC2**: once the criteria are met, the outcome is `fit · value`. -/
-theorem outcome_eq_of_meets (h : MeetsCriteria a.task s) : outcome a s = a.fit * a.task.value := by
+/-- **OC2**: once the criteria are met, the outcome is `fit · potentialValue`. -/
+theorem outcome_eq_of_meets (h : MeetsCriteria a.task s) :
+    outcome a s = a.fit * a.task.potentialValue := by
   rw [outcome, output_eq_one_iff.mpr h, mul_one]
 
 /-- **OC2**: with the same task met to the criteria, better business fit gives a strictly larger
 outcome (for a task of positive value). -/
-theorem outcome_lt_of_fit_lt (htask : a.task = a'.task) (hv : 0 < a.task.value)
+theorem outcome_lt_of_fit_lt (htask : a.task = a'.task) (hv : 0 < a.task.potentialValue)
     (hfit : a.fit < a'.fit) (h : MeetsCriteria a.task s) : outcome a s < outcome a' s := by
   rw [outcome_eq_of_meets h, outcome_eq_of_meets (htask ▸ h), ← htask]
   exact mul_lt_mul_of_pos_right hfit hv
 
-/-- **RS1**: when `fit · value > 0`, the team reaches the bound `fit · value` exactly when it meets
-the purpose and criteria. -/
-theorem outcome_eq_fit_value_iff (hpos : 0 < a.fit * a.task.value) :
-    outcome a s = a.fit * a.task.value ↔ MeetsCriteria a.task s := by
+/-- **RS1**: when `fit · potentialValue > 0`, the team reaches the bound `fit · potentialValue`
+exactly when it meets the purpose and criteria. -/
+theorem outcome_eq_fit_value_iff (hpos : 0 < a.fit * a.task.potentialValue) :
+    outcome a s = a.fit * a.task.potentialValue ↔ MeetsCriteria a.task s := by
   rw [← output_eq_one_iff, outcome]
   constructor
   · intro h
@@ -188,10 +192,10 @@ theorem outcome_eq_fit_value_iff (hpos : 0 < a.fit * a.task.value) :
   · intro h
     rw [h, mul_one]
 
-/-- **RS2**: once the criteria are met, the shortfall from the inherent value is
-`(1 - fit) · value`, whatever the team side is. -/
+/-- **RS2**: once the criteria are met, the shortfall from the potential value is
+`(1 - fit) · potentialValue`, whatever the team side is. -/
 theorem shortfall_eq_of_meets (h : MeetsCriteria a.task s) :
-    a.task.value - outcome a s = (1 - a.fit) * a.task.value := by
+    a.task.potentialValue - outcome a s = (1 - a.fit) * a.task.potentialValue := by
   rw [outcome_eq_of_meets h]
   ring
 
@@ -202,12 +206,12 @@ theorem output_eq_of_same_criteria {g g' : Task} (hd : g.difficulty = g'.difficu
   simp only [output, hd, hw, hp]
 
 /-- **RS3**: for the same team side and the same criteria, the difference in outcome comes only
-from quantities given from above (business fit and inherent value). -/
+from quantities given from above (business fit and potential value). -/
 theorem outcome_sub_eq (hd : a.task.difficulty = a'.task.difficulty)
     (hw : a.task.workload = a'.task.workload) (hp : a.task.period = a'.task.period)
     (s : TeamSide) :
     outcome a s - outcome a' s =
-      (a.fit * a.task.value - a'.fit * a'.task.value) * output a.task s := by
+      (a.fit * a.task.potentialValue - a'.fit * a'.task.potentialValue) * output a.task s := by
   rw [outcome, outcome, ← output_eq_of_same_criteria hd hw hp]
   ring
 
@@ -272,7 +276,7 @@ end KnowledgeSharing
 
 namespace Example
 
-/-- A task of level `1`, workload `10`, period `1`, inherent value `100`. -/
+/-- A task of level `1`, workload `10`, period `1`, potential value `100`. -/
 def task : Task := ⟨1, 10, 1, 100, by norm_num, by norm_num, by norm_num⟩
 
 /-- Given with business fit `0.6`, and the same task with fit `0.9`. -/
@@ -284,7 +288,7 @@ way of working improved to double the throughput. -/
 def team : TeamSide := ⟨1, 10, 1⟩
 def teamImproved : TeamSide := ⟨1, 10, 2⟩
 
-/-- The team meets the criteria; its outcome is `60` of the inherent `100`. Improving its way of
+/-- The team meets the criteria; its outcome is `60` of the potential `100`. Improving its way of
 working leaves the outcome at `60` and halves the required time. With better business fit, the
 same team's outcome is `90`. -/
 theorem responsibility_example :

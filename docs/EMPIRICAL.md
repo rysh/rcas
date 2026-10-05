@@ -16,7 +16,7 @@
 | 8 | 透過率 `τ(G)` の操作化と、結合密度による伝播の差 | §5.3 CP1 `influence_eq`、CP2 `influence_eq_zero_of_uncoupled`、CP3 `influence_eq_zero_of_no_walk`；§5.4 T3 `iterate_step_mono_weight`；§5.5 A3 `iterate_step_effWeight_subset_aligned` | 影響が行列の冪で表されること、歩道がなければ伝わらないこと、閾値モデルで重みが成分ごとに大きければ採用集合も大きいことだけを示した。`τ(G)` の操作化と候補（密度、スペクトル半径、代数的連結度）の比較は扱わない |
 | 9a | 現実の組織で `a > 0` が成り立つこと（自分で選んだ成功が自己効力感を上げる） | §4.5 E4 `efficacy_lt_of_selfChosen_success` の仮定 `ha : 0 < a` | E4 はこの前提からの帰結。前提自体は検証していない |
 | 9b | 現実の組織で `p > 0` が成り立つこと（原理に戻して返すと内面化が起きる） | §4.7 D2–D5 の仮定 `hp : 0 < p`（D5 では `0 < pMin`）；SM1 | D2–D5・SM1 はこの前提からの帰結 |
-| 9c | 現実の組織で成果条件（§4.10 ③）が成り立つこと | §4.10 SM1 `eventually_selfManaging` の仮定 `hq`；`performance_not_derivable` | ③は Phase 1 のモデルから導けないことを Lean で示した（`performance_not_derivable`）。成り立つかどうかは実測で確かめる必要がある |
+| 9c | 現実の組織で成果条件（§4.10 ③）が成り立つこと（③はアウトプットの意味と確定〔2026-10-05〕。その読み方では #33 の条件のもとで導ける：`eventually_selfManaging_output`） | §4.10 SM1 `eventually_selfManaging` の仮定 `hq`；`performance_not_derivable` | ③は Phase 1 のモデルから導けないことを Lean で示した（`performance_not_derivable`）。成り立つかどうかは実測で確かめる必要がある |
 
 ## Phase 2 のモデルが置いている前提
 
@@ -64,6 +64,7 @@ Phase 2 の定理は次の前提からの帰結であり、前提そのものが
 
 | # | 仮説 | Lean の前提 |
 |---|---|---|
-| 30 | アウトカムが「ビジネス適合 × 内在価値 × アウトプット」の掛け算で表せること | `outcome` の定義 |
+| 30 | アウトカムが「ビジネス適合 × 潜在価値 × アウトプット」の掛け算で表せること | `outcome` の定義 |
 | 31 | 目的と基準を超える出来栄えはアウトカムを増やさないこと（アウトプットは基準を満たす限り一定） | `output` の定義（完了割合を 1 で頭打ちにする） |
-| 32 | ビジネス適合と内在価値が上位から与えられ、チームの行動では変わらないこと（責任の範囲の線引き） | `GivenFromAbove` がチーム側 `TeamSide` から独立していること |
+| 32 | タスクの質（ビジネス適合・潜在価値）と量が上位から与えられ、チームの行動では変わらないこと（責任の範囲の線引き） | `GivenFromAbove` がチーム側 `TeamSide` から独立していること |
+| 33 | 上位から与えられるタスクが、シェアが行き渡ったときのチームの能力の極限の内側にあること（難易度 < 極限のフロンティア、量 < 極限の実効処理量 × 期間） | SO3 `eventually_meets`・SO4 `eventually_selfManaging_output` の仮定 `hd`, `hw` |

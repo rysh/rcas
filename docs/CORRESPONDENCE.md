@@ -163,7 +163,7 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 | 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
 |---|---|---|---|---|---|
 | 主要定理の `#print axioms` | `#print axioms ...` | Audit.lean | — | 確認済み（標準3公理以下） | — |
-| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2・拡張・サーベイ反映・NoAllocation を含む全 840 宣言） | — |
+| `RCAS` 全宣言の公理依存の機械検査 | `#assert_standard_axioms_in RCAS` | Audit.lean | — | 確認済み（違反でビルド失敗。Phase 2・拡張・サーベイ反映・NoAllocation・OutputOutcome を含む全 959 宣言） | — |
 
 ## Phase 2
 
@@ -265,7 +265,7 @@ Lean 4 `v4.34.1`、Mathlib `v4.34.1`（commit `d13f23b723b8a846827a245b89c10fc7d
 
 ### 監査（Phase 2 分）
 
-Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2・拡張・サーベイ反映・NoAllocation を合わせた全 840 宣言。
+Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている。`#assert_standard_axioms_in RCAS` の検査対象は Phase 1・2・拡張・サーベイ反映・NoAllocation・OutputOutcome を合わせた全 959 宣言。
 
 ## 拡張：ドメイン別パフォーマンスとナレッジシェア（Performance.lean）
 
@@ -412,6 +412,33 @@ Phase 2 の主要定理も `Audit.lean` で `#print axioms` にかけている�
 | **NA6** 額をどう変えても、一律 `γMin` の低下の軌道以下 | `engagementPathSized_le_engagementPath` | NoAllocation.lean | 帰結 | 証明済み | `hγ` |
 | **NA7** 配分がなければ承認だけで単調非減少 | `engagementPathSized_monotone_of_no_allocation` | NoAllocation.lean | 帰結 | 証明済み | `β ≥ 0` |
 | 配分が努力を直接増やす経済的効果（Holmström 型の誘因） | — | — | 範囲外 | 範囲外 | 著者のモデルに配分がないため |
+
+## capability → アウトプット → アウトカムと責任の範囲（OutputOutcome.lean）
+
+著者の依頼（2026-10-05）による拡張。仕様は `docs/OUTPUT_OUTCOME_SPEC.md`。Performance.lean の F・V・S は、この分解の capability の層に当たる。
+
+| 元の項目 | Lean の名前 | ファイル | 種別 | 状態 | 追加した仮定 |
+|---|---|---|---|---|---|
+| タスク（基準が求める水準・量・期間・内在価値） | `Task` | OutputOutcome.lean | 定義（上位が与える） | — | — |
+| 上位から与えられるもの（タスクとビジネス適合 `fit ∈ [0,1]`） | `GivenFromAbove` | OutputOutcome.lean | 定義 | — | — |
+| チーム側（フロンティア・処理量・仕組みの効率） | `TeamSide`, `effThroughput`, `Improves` | OutputOutcome.lean | 定義 | — | — |
+| アウトプット：目的と基準どおりに完了した割合 | `output` | OutputOutcome.lean | 定義 | — | 基準を超える出来栄えは数えない（「一定」の定式化） |
+| 目的と基準を満たす | `MeetsCriteria` | OutputOutcome.lean | 定義 | — | — |
+| アウトカム = 適合 × 内在価値 × アウトプット | `outcome` | OutputOutcome.lean | 定義・**前提**（掛け算の形） | — | EMPIRICAL #30 |
+| 必要時間 | `requiredTime` | OutputOutcome.lean | 定義 | — | — |
+| **OP1** アウトプット ∈ [0,1]、= 1 ⇔ 基準を満たす | `output_nonneg`, `output_le_one`, `output_eq_one_iff` | OutputOutcome.lean | 帰結 | 証明済み | — |
+| **OP2** 基準を満たした後はアウトプットは一定 | `output_eq_one_of_improves` | OutputOutcome.lean | 帰結 | 証明済み | — |
+| **OP3** アウトプットはチーム側について単調 | `output_mono` | OutputOutcome.lean | 帰結 | 証明済み | — |
+| **OC1** アウトカム ≤ 適合 × 価値 ≤ 内在価値 | `outcome_le_fit_value`, `outcome_le_value` | OutputOutcome.lean | 帰結（定義から直ちに） | 証明済み | — |
+| **OC2** 基準を満たせばアウトカム = 適合 × 価値、適合について狭義単調 | `outcome_eq_of_meets`, `outcome_lt_of_fit_lt` | OutputOutcome.lean | 帰結 | 証明済み | `value > 0` |
+| **RS1** チームが到達できる上限は適合 × 価値（上位が決める量だけ）、到達 ⇔ 基準を満たす | `outcome_le_fit_value`, `outcome_eq_fit_value_iff` | OutputOutcome.lean | 帰結 | 証明済み | `fit · value > 0` |
+| **RS2** 基準を満たせば内在価値との差は (1 − 適合) × 価値で、チーム側によらない | `shortfall_eq_of_meets` | OutputOutcome.lean | 帰結 | 証明済み | — |
+| **RS3** 同じチーム・同じ基準ならアウトカムの差は上位側の量だけで決まる | `outcome_sub_eq` | OutputOutcome.lean | 帰結 | 証明済み | — |
+| **RS4** 基準を満たした後の改善はアウトカムを変えず、必要時間だけを減らす | `outcome_eq_of_improves`, `requiredTime_le_of_improves` | OutputOutcome.lean | 帰結 | 証明済み | — |
+| **CP1** ナレッジシェアのもとでアウトプットは単調非減少、必要時間は単調非増加 | `KnowledgeSharing.output_monotone`, `requiredTime_antitone` | OutputOutcome.lean | 帰結 | 証明済み | `φ` 単調・非負、`μ ≥ 0`、`e` 固定 |
+| **CP2** シェアだけでは、初期の上限を超える難易度のタスクはずっと達成できない | `KnowledgeSharing.output_eq_zero_of_ceiling_lt` | OutputOutcome.lean | 帰結 | 証明済み | トップ固定 |
+| 例：適合 0.6・価値 100 で 60、仕組み改善で 60 のまま時間は半分、適合 0.9 なら 90 | `Example.responsibility_example` | OutputOutcome.lean | 帰結（具体例） | 証明済み | — |
+| ビジネス適合・内在価値の測り方、タスクの質そのもの | — | — | 範囲外 | 範囲外 | 上位が与えるもの |
 
 ## 指示書のスケッチからの調整
 

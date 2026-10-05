@@ -19,7 +19,7 @@ lake build
 
 `lake build` は `RCAS/Audit.lean` も含む。ここで `RCAS` 名前空間の全宣言が `propext` / `Classical.choice` / `Quot.sound` 以外の公理（`sorry` を含む）に依存していないかを検査し、違反があればビルドが失敗する。
 
-現在の検査対象は **840 宣言**（補助宣言を含む。2026-10-05 時点）。検査は `Audit.lean` が import したモジュールだけを見るので、新しいファイルは `Audit.lean` の import に加えること。
+現在の検査対象は **959 宣言**（補助宣言を含む。2026-10-05 時点）。検査は `Audit.lean` が import したモジュールだけを見るので、新しいファイルは `Audit.lean` の import に加えること。
 
 ## バージョン
 
@@ -48,6 +48,7 @@ RCAS/
   Motivation.lean     サーベイ反映 §4：SDT 連続体と engagement（SDT1, SDT2）
   Escalation.lean     サーベイ反映 §5：knowledge hierarchy と escalation（ESC1–ESC3）
   NoAllocation.lean   利益配分をモデルに含めない理由（NA1–NA7、著者の判断 2026-10-05）
+  OutputOutcome.lean  capability → アウトプット → アウトカムと責任の範囲（OP・OC・RS・CP）
   Field/
     Forcing.lean          §5.1 指示と制約（F1, F2）
     StuartLandau.lean     §5.2 振幅方程式の平衡と導関数（SL1–SL3）
@@ -64,6 +65,7 @@ docs/
   PERFORMANCE_SPEC.md 拡張（Performance.lean）の仕様
   SURVEY_ADDITIONS_SPEC.md サーベイ反映の追加の実装方針
   NO_ALLOCATION_SPEC.md   利益配分をモデルに含めない理由の仕様
+  OUTPUT_OUTCOME_SPEC.md  capability → アウトプット → アウトカムの仕様
 sources/              著者が置く原稿（参照のみ）
 ```
 

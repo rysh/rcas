@@ -16,6 +16,7 @@ import RCAS.OperatingMode
 import RCAS.Motivation
 import RCAS.Escalation
 import RCAS.NoAllocation
+import RCAS.OutputOutcome
 import RCAS.Field.Forcing
 import RCAS.Field.StuartLandau
 import RCAS.Field.Coupling

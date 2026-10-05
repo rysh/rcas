@@ -15,6 +15,7 @@ import RCAS.OperatingMode
 import RCAS.Motivation
 import RCAS.Escalation
 import RCAS.NoAllocation
+import RCAS.OutputOutcome
 import RCAS.Field.Forcing
 import RCAS.Field.StuartLandau
 import RCAS.Field.Coupling
@@ -291,3 +292,23 @@ elab "#assert_standard_axioms_in " ns:ident : command => do
 #print axioms RCAS.engagementPathSized_succ_le
 #print axioms RCAS.engagementPathSized_le_engagementPath
 #print axioms RCAS.engagementPathSized_monotone_of_no_allocation
+
+/-! ### Capability → output → outcome and responsibility: OutputOutcome -/
+#print axioms RCAS.output_nonneg
+#print axioms RCAS.output_le_one
+#print axioms RCAS.output_eq_one_iff
+#print axioms RCAS.output_eq_one_of_improves
+#print axioms RCAS.output_mono
+#print axioms RCAS.outcome_le_fit_value
+#print axioms RCAS.outcome_le_value
+#print axioms RCAS.outcome_eq_of_meets
+#print axioms RCAS.outcome_lt_of_fit_lt
+#print axioms RCAS.outcome_eq_fit_value_iff
+#print axioms RCAS.shortfall_eq_of_meets
+#print axioms RCAS.outcome_sub_eq
+#print axioms RCAS.outcome_eq_of_improves
+#print axioms RCAS.requiredTime_le_of_improves
+#print axioms RCAS.KnowledgeSharing.output_monotone
+#print axioms RCAS.KnowledgeSharing.requiredTime_antitone
+#print axioms RCAS.KnowledgeSharing.output_eq_zero_of_ceiling_lt
+#print axioms RCAS.Example.responsibility_example
